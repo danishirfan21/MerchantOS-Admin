@@ -2,7 +2,7 @@
 
 A server-rendered retail operations workspace built with ASP.NET Core MVC 10 and Razor. MerchantOS Admin complements [MerchantOS POS](https://github.com/danishirfan21/MerchantOS-POS) with read-only catalog, stock and order oversight. It does not implement checkout or maintain a second inventory database.
 
-> Local demo only. The upstream POS API is unauthenticated. Neither application may be exposed publicly. Milestone 1 is awaiting repository creation and database-backed CI verification; see [PROJECT_STATUS.md](PROJECT_STATUS.md).
+> Local demo only. The upstream POS API is unauthenticated. Neither application may be exposed publicly. Milestone 1 is verified against the real POS API and PostgreSQL 17; see [PROJECT_STATUS.md](PROJECT_STATUS.md).
 
 ## Pages
 
@@ -97,11 +97,11 @@ This fixture is test-only and is never started by the application or live CI wor
 
 ## Screenshots
 
-Current captures are from local contract-fixture browser verification, **not a database-backed integration run**. Replace them with real CI captures after a successful integration run.
+Actual browser captures from the [passing database-backed CI run](https://github.com/danishirfan21/MerchantOS-Admin/actions/runs/40957510020), using the pinned POS API, seeded PostgreSQL 17, and persisted checkout receipts. [Download reports and full browser artifacts](https://github.com/danishirfan21/MerchantOS-Admin/actions/runs/40957510020/artifacts/12933623920).
 
 | Desktop | Tablet | Mobile |
 | --- | --- | --- |
-| [Overview](docs/screenshots/desktop-overview-contract-fixture.png) | [Overview](docs/screenshots/tablet-overview-contract-fixture.png) | [Overview](docs/screenshots/mobile-overview-contract-fixture.png) |
+| [Overview](docs/screenshots/desktop-overview.png) | [Overview](docs/screenshots/tablet-overview.png) | [Overview](docs/screenshots/mobile-overview.png) |
 
 ## Security limitations
 
@@ -111,7 +111,7 @@ MVC output encoding, bounded filter input validation, safe Handlebars escaping, 
 
 ## Roadmap
 
-1. **Milestone 1:** read-only MVC foundation; complete real CI verification and open the feature PR.
+1. **Milestone 1:** read-only MVC foundation verified; [PR #1](https://github.com/danishirfan21/MerchantOS-Admin/pull/1) remains open for review.
 2. **Milestone 2:** authenticated and authorized product/inventory contracts, validation and audit trails, coordinated explicitly with POS.
 3. **Milestone 3:** persisted operational reporting with honest pagination/date-range contracts.
 4. **Milestone 4:** accessibility, UX polish, screenshots and portfolio finalization.

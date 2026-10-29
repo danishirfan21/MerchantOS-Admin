@@ -1,14 +1,18 @@
-## Read-only retail administration foundation
+## Verify the read-only MVC admin foundation
 
-Adds a separate .NET 10 MVC/Razor workspace for catalog, inventory and order oversight through the existing MerchantOS POS REST API. The dashboard identifies sales as the latest-100-order window; unavailable upstream data is displayed honestly. No POS changes, direct database access or administrative writes are introduced.
+The initial user upload already contains the .NET 10 MVC/Razor application. This PR pins CI to Playwright-supported Ubuntu 24.04, replaces contract-fixture README screenshots with real database-backed captures, and records the verified implementation and remaining limitations. Main is preserved and MerchantOS POS is unchanged.
 
-Bootstrap provides the responsive navigation/forms/tables, jQuery enhances filtering, and a precompiled Handlebars template safely renders dynamic rows. Standard GET forms and server-rendered details work without JavaScript.
+The application provides overview, catalog/product details, inventory and order/receipt pages through typed server-side POS API integration. Bootstrap supplies responsive navigation/forms/tables; jQuery and escaped precompiled Handlebars enhance catalog filtering while Razor GET forms remain usable without JavaScript. There is no second database, checkout implementation or admin write surface.
 
 ### Validation
 
-- Local Release build: zero warnings/errors.
-- 26 passing .NET tests, 3 passing template checks.
-- 15 passing desktop/tablet/mobile browser checks against an explicit contract fixture; this does not prove PostgreSQL integration.
-- Required before ready-for-review: successful pinned POS/PostgreSQL 17 GitHub Actions run, real integration verification and uploaded screenshots/reports.
+[Successful integration run](https://github.com/danishirfan21/MerchantOS-Admin/actions/runs/40957510020) · [Screenshots, HTML/TRX reports and logs](https://github.com/danishirfan21/MerchantOS-Admin/actions/runs/40957510020/artifacts/12933623920)
 
-Security: local/isolated demo only; both applications require an authorization strategy before public use or future admin writes. Do not merge automatically.
+- .NET Release builds: zero warnings/errors.
+- 26 .NET tests, 3 template checks, 15 desktop/tablet/mobile Playwright tests pass with zero retries.
+- Real pinned POS API + PostgreSQL 17: seed/migration, health/catalog contracts, checkout/idempotency/concurrency, 30 product/inventory records, 5 persisted receipts and four main Razor pages verified.
+- Local dependency audit: zero vulnerabilities.
+
+### Boundaries
+
+Local/isolated demo only. Authentication/authorization and safe backend contracts must precede future writes or public use. Sales metrics and order search cover the latest 100 orders, not lifetime reporting. No public deployment. Leave this PR unmerged.
