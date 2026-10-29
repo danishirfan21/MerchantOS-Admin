@@ -1,0 +1,4 @@
+@model List<OrderDto>
+<div class="table-responsive"><table class="table admin-table"><thead><tr><th>Order</th><th>Created (UTC)</th><th>Total</th><th>Payment</th><th>Status</th></tr></thead><tbody>
+@foreach(var order in Model) { <tr><td><a asp-action="Order" asp-route-id="@order.Id">@order.OrderNumber</a></td><td><time datetime="@order.CreatedAt.ToUniversalTime().ToString("O")">@order.CreatedAt.ToUniversalTime().ToString("dd MMM yyyy · HH:mm")</time></td><td class="money">@Display.Money(order.PayableHalalas, order.Currency)</td><td>@order.PaymentMethod</td><td><span class="stock-badge">@order.Status</span></td></tr> }
+</tbody></table></div>

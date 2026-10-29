@@ -1,0 +1,83 @@
+name: MerchantOS Admin verification
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: merchantos
+          POSTGRES_USER: merchantos
+          POSTGRES_PASSWORD: merchantos_ci
+        ports: ['5433:5432']
+        options: >-
+          --health-cmd "pg_isready -U merchantos -d merchantos"
+          --health-interval 5s --health-timeout 3s --health-retries 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: danishirfan21/MerchantOS-POS
+          ref: 68cc809edb2146e13632ff9cd316504b2dc5d25d
+          path: reference-pos
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Build local vendor assets and verify escaping
+        run: |
+          npm ci
+          npm run assets
+          npm run test:assets
+      - name: Restore, build and unit test MVC
+        run: |
+          dotnet restore tests/MerchantOS.Admin.Tests/MerchantOS.Admin.Tests.csproj
+          dotnet build tests/MerchantOS.Admin.Tests/MerchantOS.Admin.Tests.csproj -c Release --no-restore
+          dotnet test tests/MerchantOS.Admin.Tests/MerchantOS.Admin.Tests.csproj -c Release --no-build --logger "trx;LogFileName=admin.trx" --results-directory test-results/unit
+      - name: Initialize isolated POS database
+        env:
+          PGPASSWORD: merchantos_ci
+        run: |
+          for file in reference-pos/db/init/*.sql reference-pos/db/migrations/*.sql; do
+            psql -h 127.0.0.1 -p 5433 -U merchantos -d merchantos -v ON_ERROR_STOP=1 -f "$file"
+          done
+      - name: Start real POS API and verify checkout fixture
+        env:
+          ConnectionStrings__MerchantDb: Host=127.0.0.1;Port=5433;Database=merchantos;Username=merchantos;Password=merchantos_ci
+          ASPNETCORE_URLS: http://127.0.0.1:5080
+        run: |
+          dotnet build reference-pos/services/merchant-api/MerchantOS.Api.csproj -c Release
+          dotnet run --project reference-pos/services/merchant-api/MerchantOS.Api.csproj -c Release --no-build > pos-api.log 2>&1 &
+          for i in {1..40}; do curl -fsS http://127.0.0.1:5080/api/health && break; sleep 2; done
+          curl -fsS http://127.0.0.1:5080/api/health
+          python3 reference-pos/scripts/verify_live_api.py
+          python3 reference-pos/scripts/verify_checkout.py
+      - name: Start MVC and verify live integration
+        env:
+          ASPNETCORE_URLS: http://127.0.0.1:5090
+          PosApi__BaseUrl: http://127.0.0.1:5080/
+        run: |
+          dotnet run --project src/MerchantOS.Admin/MerchantOS.Admin.csproj -c Release --no-build > admin.log 2>&1 &
+          for i in {1..40}; do curl -fsS http://127.0.0.1:5090/ >/dev/null && break; sleep 2; done
+          python3 scripts/verify-live.py
+      - name: Responsive browser verification
+        run: |
+          npx playwright install --with-deps chromium
+          npm run test:e2e
+      - name: Upload screenshots, reports and logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: merchantos-admin-verification
+          path: |
+            test-results/
+            playwright-report/
+            pos-api.log
+            admin.log

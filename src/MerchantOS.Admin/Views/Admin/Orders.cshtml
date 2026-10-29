@@ -1,0 +1,9 @@
+@model OrdersVm
+@{ ViewData["Title"] = "Orders"; }
+<div class="page-heading"><div><p class="eyebrow">SALES ACTIVITY</p><h1>Order history</h1><p>Read-only receipts from MerchantOS POS.</p></div><span class="read-only">Latest 100 orders</span></div>
+<section class="panel"><div class="panel-heading"><div><h2>Recent orders</h2><p>All dates · newest first · search applies to the latest 100 orders</p></div></div>
+<form method="get" class="filter-bar"><div class="search-field"><label for="search">Order number</label><input class="form-control" id="search" name="search" value="@Model.Search" maxlength="120" placeholder="Search order number"></div><button class="btn btn-emerald" type="submit">Search</button><a class="btn btn-light" asp-action="Orders">Reset</a></form>
+@if(Model.Error is not null) { <partial name="_ErrorNotice" model="Model.Error" /> }
+else if(Model.Orders.Count == 0) { <div class="empty"><h3>No orders found</h3><p>Sales completed in the POS appear here. Try clearing your search.</p></div> }
+else { <partial name="_OrderTable" model="Model.Orders" /> }
+</section>

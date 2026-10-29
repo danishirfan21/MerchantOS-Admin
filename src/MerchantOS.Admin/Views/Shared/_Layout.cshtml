@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>@ViewData["Title"] · MerchantOS Admin</title>
+<link rel="stylesheet" href="~/vendor/bootstrap.min.css"><link rel="stylesheet" href="~/css/admin.css" asp-append-version="true"></head>
+<body><a class="skip-link" href="#main">Skip to content</a>
+<aside class="sidebar offcanvas-md offcanvas-start" tabindex="-1" id="sidebar" aria-label="Primary navigation">
+<div class="brand"><span class="brand-mark">M</span><div>MerchantOS<small>ADMIN WORKSPACE</small></div></div>
+<div class="workspace"><span class="store-icon">▦</span><div>Electronics store<small>Single-store operations</small></div></div>
+<p class="nav-label">WORKSPACE</p><nav>
+@foreach (var item in new[] { ("Index", "Overview", "◫"), ("Products", "Products", "▦"), ("Inventory", "Inventory", "▤"), ("Orders", "Orders", "≡") }) {
+ var active = ViewContext.RouteData.Values["action"]?.ToString() == item.Item1 || (item.Item1 == "Products" && ViewContext.RouteData.Values["action"]?.ToString() == "Product");
+ <a class="nav-link @(active ? "active" : "")" asp-action="@item.Item1" asp-controller="Admin" aria-current="@(active ? "page" : null)"><span aria-hidden="true">@item.Item3</span>@item.Item2</a>
+}
+</nav><div class="sidebar-note"><span class="live-dot"></span> Read-only workspace<p>Connected to MerchantOS POS.<br>Changes stay at the source.</p></div>
+</aside>
+<div class="shell"><header class="topbar"><button type="button" class="btn btn-outline-secondary d-md-none" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar" aria-label="Open navigation">☰</button><span>Store operations <span class="top-slash">/</span> <strong>@ViewData["Title"]</strong></span><span class="environment">LOCAL DEMO</span></header>
+<main id="main" class="main" tabindex="-1">@RenderBody()</main><footer>MerchantOS Admin <span>Milestone 1 · Read-only operations</span></footer></div>
+<script src="~/vendor/jquery.min.js"></script><script src="~/vendor/bootstrap.bundle.min.js"></script><script src="~/vendor/handlebars.runtime.min.js"></script><script src="~/js/templates.js" asp-append-version="true"></script><script src="~/js/admin.js" asp-append-version="true"></script>
+</body></html>

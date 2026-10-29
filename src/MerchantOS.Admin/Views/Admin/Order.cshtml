@@ -1,0 +1,6 @@
+@model OrderDto
+@{ ViewData["Title"] = "Order details"; }
+<a class="back-link" asp-action="Orders">← Order history</a><div class="page-heading"><div><p class="eyebrow">POS RECEIPT</p><h1>@Model.OrderNumber</h1><p>@Model.CreatedAt.ToUniversalTime().ToString("dd MMM yyyy · HH:mm") UTC · @Model.PaymentMethod · @Model.Status</p></div><span class="read-only">Read only</span></div>
+<section class="panel"><div class="panel-heading"><div><h2>Order items</h2><p>Prices and totals as recorded at checkout</p></div></div><div class="table-responsive"><table class="table admin-table"><thead><tr><th>Product</th><th>SKU</th><th>Quantity</th><th>Unit price</th></tr></thead><tbody>
+@foreach(var item in Model.Items ?? []) { <tr><td>@item.Name</td><td>@item.Sku</td><td>@item.Quantity</td><td>@Display.Money(item.UnitPriceHalalas, Model.Currency)</td></tr> }
+</tbody></table></div><dl class="receipt-totals"><div><dt>Subtotal</dt><dd>@Display.Money(Model.SubtotalHalalas, Model.Currency)</dd></div><div><dt>Discount</dt><dd>@Display.Money(Model.DiscountHalalas, Model.Currency)</dd></div><div><dt>VAT</dt><dd>@Display.Money(Model.VatHalalas, Model.Currency)</dd></div><div class="receipt-total"><dt>Total paid</dt><dd>@Display.Money(Model.PayableHalalas, Model.Currency)</dd></div><div><dt>Change</dt><dd>@Display.Money(Model.ChangeHalalas, Model.Currency)</dd></div></dl></section>

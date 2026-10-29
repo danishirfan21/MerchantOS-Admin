@@ -1,0 +1,1 @@
+{"name":"merchantos-admin","private":true,"version":"0.1.0","scripts":{"assets":"node scripts/build-assets.cjs","test:e2e":"playwright test","test:assets":"node --test tests/assets.test.cjs"},"dependencies":{"bootstrap":"5.3.8","handlebars":"4.7.10","jquery":"3.7.1"},"devDependencies":{"@playwright/test":"1.56.1"}}

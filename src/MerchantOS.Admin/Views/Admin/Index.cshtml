@@ -1,0 +1,22 @@
+@model DashboardVm
+@{ ViewData["Title"] = "Overview"; }
+<div class="page-heading"><div><p class="eyebrow">STORE AT A GLANCE</p><h1>Operations overview</h1><p>Inventory health and the latest activity from your POS.</p></div><a class="btn btn-emerald" asp-action="Products">Browse products <span aria-hidden="true">↗</span></a></div>
+<div class="scope-banner"><span class="live-dot"></span> Current catalog snapshot <span>Orders and sales cover the latest 100 orders, across all dates.</span></div>
+<div class="metric-grid">
+<div class="metric"><span>Total products</span><strong>@(Model.Catalog.Error is null ? Model.Catalog.TotalProducts.ToString() : "Unavailable")</strong><small>Across all categories</small></div>
+<div class="metric"><span>Available inventory</span><strong>@(Model.Catalog.Error is null ? Model.Catalog.TotalUnits.ToString("N0") : "Unavailable")</strong><small>Units on hand</small></div>
+<div class="metric"><span>Low-stock products</span><strong>@(Model.Catalog.Error is null ? Model.Catalog.LowStock.ToString() : "Unavailable")</strong><small>@(Model.Catalog.Error is null ? $"1–5 units remaining · {Model.Catalog.OutOfStock} out of stock" : "POS service unavailable")</small></div>
+<div class="metric featured"><span>Completed sales</span><strong>@(Model.Orders.Error is null ? Display.Money(Model.SalesHalalas) : "Unavailable")</strong><small>@(Model.Orders.Error is null ? $"{Model.CompletedOrders} completed orders in latest window" : "POS service unavailable")</small></div>
+</div>
+<div class="overview-grid"><section class="panel"><div class="panel-heading"><div><h2>Recent orders</h2><p>Latest transactions, newest first</p></div><a asp-action="Orders">View orders →</a></div>
+@if(Model.Orders.Error is not null) { <partial name="_ErrorNotice" model="Model.Orders.Error" /> }
+else if(Model.Orders.Orders.Count == 0) { <div class="empty"><h3>No orders yet</h3><p>Completed POS sales will appear here.</p></div> }
+else { <partial name="_OrderTable" model="Model.Orders.Orders.Take(6).ToList()" /> }
+</section><section class="panel"><div class="panel-heading"><div><h2>Stock watch</h2><p>Items needing attention</p></div></div>
+@if(Model.Catalog.Error is not null) { <partial name="_ErrorNotice" model="Model.Catalog.Error" /> }
+else { var watch = Model.Catalog.Products.Where(p => p.Stock <= 5).OrderBy(p => p.Stock).Take(6).ToList();
+ if(watch.Count == 0) { <div class="empty"><h3>No stock alerts</h3><p>All catalog items have more than five units.</p></div> }
+ foreach(var product in watch) { <a class="stock-item" asp-action="Product" asp-route-id="@product.Id"><div><strong>@product.Name</strong><small>@product.Sku</small></div><span class="stock-badge @product.StatusClass">@product.Stock left</span></a> }
+}
+<div class="panel-bottom"><a asp-action="Inventory">Review inventory →</a></div></section></div>
+<section class="integration-note"><h2>One source of truth</h2><p>Catalog, stock and order records come from MerchantOS POS. Sales totals include VAT and discounts as recorded by the POS; only SAR completed orders contribute to the displayed total. No administrative writes are enabled.</p></section>

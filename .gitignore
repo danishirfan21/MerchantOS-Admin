@@ -1,0 +1,11 @@
+**/bin/
+**/obj/
+node_modules/
+playwright-report/
+test-results/
+*.log
+.env
+.vs/
+src/MerchantOS.Admin/wwwroot/vendor/
+src/MerchantOS.Admin/wwwroot/js/templates.js
+reference-pos/
