@@ -28,8 +28,8 @@ Reports are in the accompanying verification package, or generated in `test-resu
 
 ## Pending completion gates
 
-- `danishirfan21/MerchantOS-Admin` repository creation. The connected GitHub toolset has no repository creation action.
-- Push local baseline and `feature/milestone-1` to the separate repository.
+- Repository created: https://github.com/danishirfan21/MerchantOS-Admin. The initial user upload matches the locally verified implementation.
+- Continue verification on `feature/milestone-1-verification`; preserve the user-uploaded main branch.
 - Run and fix the GitHub Actions workflow against the pinned real POS API and PostgreSQL 17.
 - Record the successful Actions URL and actual database-backed results here.
 - Upload real CI screenshots/reports, replace contract-fixture README captures if appropriate, and open the Milestone 1 pull request.
