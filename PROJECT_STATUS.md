@@ -1,4 +1,32 @@
-# MerchantOS Admin — desktop iteration 1
+# MerchantOS Admin — tablet iteration 2
+
+Updated 31 October 2026 (Asia/Karachi).
+
+Branch: `feature/stitch-tablet`, based on merged desktop main `fa9f81d66b0c187d708e680b55db9aef5f6266b5`. Foundation PR #1 and desktop PR #2 are merged. Main post-merge verification [41111366791](https://github.com/danishirfan21/MerchantOS-Admin/actions/runs/41111366791) passed.
+
+## Implemented
+
+All five supplied tablet sources inspected and rendered at 768 × 1024. Reuses existing Razor pages, partials, escaped Handlebars, GET-only services and Bootstrap components. Adds compact header, accessible navigation drawer, two-column dashboard/inventory cards, three catalog summaries, compact tables and stacked receipt sections. The same print button appears after Payment Method at tablet width. Desktop remains at 1440 × 900.
+
+## Verification
+
+- Local MVC Release build: passed, zero warnings/errors.
+- Local .NET tests: 33 passed, zero failed/skipped.
+- Local template checks: 3 passed, zero failed.
+- Local tablet presentation checks: 10 passed, zero failed, using the explicitly documented contract fixture only. These do not verify the real API/database.
+- Full real POS/PostgreSQL, 15 desktop and 19 tablet browser checks: pending this branch's CI. Results and artifact links will be recorded after execution.
+
+The browser suite retains every desktop assertion and adds touch/drawer focus and close checks, two-column/stacking assertions, compact table checks, order search/date/pagination, control touch targets, table overflow, and one final receipt print action. Retries remain zero.
+
+## Scope and adaptations
+
+Mobile iteration 3, POS changes, writes, authentication and public deployment remain deferred. The latest-100-order window, UTC date filters and uniform demo stock threshold (5 units) remain explicit. Stitch's illustrative metrics, terminal/customer/compliance data and unsupported notifications/settings are not presented as actual data. Seven rows per page are retained across devices. Tablet catalog summary shows actual catalog/healthy/attention counts rather than an invented catalog valuation.
+
+See [tablet visual review](docs/tablet-visual-review.md). Historical desktop verification follows.
+
+---
+
+# Desktop iteration 1 verification (historical)
 
 Updated 30 October 2026 (Asia/Karachi).
 

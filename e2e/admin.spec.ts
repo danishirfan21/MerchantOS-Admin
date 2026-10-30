@@ -8,7 +8,7 @@ async function receipt(page: any) {
  return detail;
 }
 for (const [name,path,heading] of pages) {
- test(name + ' desktop page renders live POS data', async ({page},testInfo) => {
+ test(name + ' page renders live POS data', async ({page},testInfo) => {
   const record = path === 'receipt' ? await receipt(page) : null;
   await page.goto(record ? '/Admin/Order/' + record.id : path);
   await expect(page.getByRole('heading',{level:1})).toContainText(heading);
@@ -16,12 +16,12 @@ for (const [name,path,heading] of pages) {
   expect(await page.evaluate(()=>document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
   await expect(page.locator('#main')).toBeVisible();
   if(name==='overview') await expect(page.locator('.dashboard-metrics .metric').nth(2).locator('strong')).toHaveText('30');
-  if(testInfo.project.name === 'desktop') await page.screenshot({path:'test-results/desktop/'+name+'.png',fullPage:false});
+  await page.screenshot({path:'test-results/'+testInfo.project.name+'/'+name+'.png',fullPage:false});
  });
 }
 test('sidebar navigation preserves active state', async ({page},testInfo) => {
  await page.goto('/');
- if(testInfo.project.name === 'mobile') await page.getByRole('button',{name:'Open navigation'}).click();
+ if(testInfo.project.name !== 'desktop') await page.getByRole('button',{name:'Open navigation'}).click();
  await page.locator('#sidebar').getByRole('link',{name:'Inventory',exact:true}).click();
  await expect(page.getByRole('heading',{level:1,name:'Inventory'})).toBeVisible();
  await expect(page.locator('#sidebar a[aria-current=page]')).toHaveText('Inventory');
@@ -90,7 +90,7 @@ test('orders browse persisted receipts and filter payment', async ({page}) => {
  await page.locator('tbody .row-action').first().click();
  await expect(page.getByRole('heading',{name:'Purchased Items',exact:false})).toBeVisible();
 });
-test('receipt preserves backend total and print action', async ({page}) => {
+test('receipt preserves backend total and print action', async ({page},testInfo) => {
  const order=await receipt(page);
  await page.addInitScript(()=>{window.print=()=>{(window as any).__receiptPrinted=true;};});
  await page.goto('/Admin/Order/'+order.id);
@@ -102,7 +102,7 @@ test('receipt preserves backend total and print action', async ({page}) => {
  await expect(page.locator('.topbar')).not.toBeVisible();
  await expect(page.locator('.financial-summary')).toBeVisible();
  await expect(page.locator('.purchased-items')).toBeVisible();
- await page.pdf({path:'test-results/desktop/receipt.pdf',format:'A4',printBackground:true});
+ await page.pdf({path:'test-results/'+testInfo.project.name+'/receipt.pdf',format:'A4',printBackground:true});
 });
 test('loading and failure states retain previous catalog rows', async ({page}) => {
  await page.goto('/Admin/Products');

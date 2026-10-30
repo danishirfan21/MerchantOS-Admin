@@ -3,8 +3,9 @@
 <title>@ViewData["Title"] · MerchantOS Admin</title><link rel="stylesheet" href="~/fonts/inter.css"><link rel="stylesheet" href="~/fonts/symbols.css">
 <link rel="stylesheet" href="~/vendor/bootstrap.min.css"><link rel="stylesheet" href="~/css/admin.css" asp-append-version="true"></head>
 <body class="@ViewData["PageClass"]"><a class="skip-link" href="#main">Skip to content</a>
-<aside class="sidebar offcanvas-md offcanvas-start" tabindex="-1" id="sidebar" aria-label="Primary navigation">
-<a class="brand" asp-action="Index" asp-controller="Admin"><span class="brand-mark">M</span><span>MerchantOS</span></a>
+<aside class="sidebar offcanvas-xl offcanvas-start" tabindex="-1" id="sidebar" aria-labelledby="navigation-title">
+<a class="brand" id="navigation-title" asp-action="Index" asp-controller="Admin"><span class="brand-mark">M</span><span>MerchantOS</span></a>
+<button class="btn-close btn-close-white navigation-close" type="button" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Close navigation"></button>
 <p class="nav-label">Management</p><nav>
 @foreach (var item in new[] { ("Index", "Overview"), ("Products", "Products"), ("Inventory", "Inventory"), ("Orders", "Orders") }) {
  var action = ViewContext.RouteData.Values["action"]?.ToString();
@@ -13,9 +14,9 @@
 }
 </nav><div class="sidebar-profile"><span class="avatar"><span class="icon" aria-hidden="true">person</span></span><div><strong>Read-only workspace</strong><small>Riyadh Flagship (Demo)</small></div></div>
 </aside>
-<div class="shell"><header class="topbar"><div class="breadcrumbs"><button type="button" class="btn btn-light d-md-none" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar" aria-label="Open navigation"><span class="icon" aria-hidden="true">menu</span></button><span>MerchantOS</span><span class="icon" aria-hidden="true">chevron_right</span><strong>@ViewData["Title"]</strong>@if(ViewData["BreadcrumbDetail"] is string detail) { <span class="icon" aria-hidden="true">chevron_right</span><strong>@detail</strong> }</div>
+<div class="shell"><header class="topbar"><div class="breadcrumbs"><button type="button" class="btn btn-light navigation-toggle" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar" aria-expanded="false" aria-label="Open navigation"><span class="icon" aria-hidden="true">menu</span></button><span class="tablet-brand-mark" aria-hidden="true"><span class="icon">storefront</span></span><span class="header-brand">MerchantOS</span><span class="icon" aria-hidden="true">chevron_right</span><strong>@ViewData["Title"]</strong>@if(ViewData["BreadcrumbDetail"] is string detail) { <span class="icon" aria-hidden="true">chevron_right</span><strong>@detail</strong> }</div>
 @if(ViewData["PageClass"] is string pageClass && pageClass != "receipt-page") { <form class="header-search" method="get" asp-action="Products" asp-controller="Admin"><span class="icon" aria-hidden="true">search</span><label class="visually-hidden" for="global-search">Global product search</label><input id="global-search" name="search" maxlength="120" placeholder="Search... (Ctrl+K)"><kbd>Ctrl+K</kbd></form> }
-<div class="header-store"><span class="store-pill"><span class="icon" aria-hidden="true">storefront</span>Riyadh Flagship (Demo)</span><span class="avatar avatar-small" title="Local read-only demo"><span class="icon" aria-hidden="true">account_circle</span></span></div></header>
+<div class="header-store"><span class="store-pill"><span class="icon" aria-hidden="true">storefront</span>Riyadh Flagship (Demo)<span class="tablet-currency">SAR</span></span><span class="avatar avatar-small" title="Local read-only demo"><span class="icon" aria-hidden="true">account_circle</span></span></div></header>
 <main id="main" class="main" tabindex="-1">@RenderBody()</main></div>
 <div class="offcanvas offcanvas-end product-drawer" tabindex="-1" id="product-drawer" aria-labelledby="product-drawer-title"><div class="offcanvas-header"><h2 id="product-drawer-title">Product Details</h2><button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close product details"></button></div><div class="offcanvas-body" id="product-drawer-body" aria-live="polite"></div></div>
 <script src="~/vendor/jquery.min.js"></script><script src="~/vendor/bootstrap.bundle.min.js"></script><script src="~/vendor/handlebars.runtime.min.js"></script><script src="~/js/templates.js" asp-append-version="true"></script><script src="~/js/admin.js" asp-append-version="true"></script>

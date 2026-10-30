@@ -1518,10 +1518,9 @@ a:focus-visible,button:focus-visible {
 .attention-banner p {
   color:var(--secondary)
 }
-/* Existing narrow-screen fallback retained;
-approved tablet/mobile designs are deferred. */
-@media(min-width:768px) {
-  .sidebar.offcanvas-md {
+/* Shared drawer breakpoint; desktop remains expanded at 1200px and above. */
+@media(min-width:1200px) {
+  .sidebar.offcanvas-xl {
     position:fixed;
     top:0;
     bottom:0;
@@ -1612,6 +1611,136 @@ approved tablet/mobile designs are deferred. */
   .sidebar-profile {
     margin-top:40px
   }
+}
+/* Shared identity links preserve desktop typography. */
+.product-name-link { color:inherit; }
+.admin-table .product-name-link { font-size:inherit; }
+.tablet-stock-value,.catalog-metrics .metric>div>.tablet-stock-value,.tablet-unit,.tablet-payment,.tablet-currency,.tablet-brand-mark,.navigation-close { display:none; }
+.navigation-toggle { display:none; }
+@media(max-width:1199px) {
+  .sidebar { z-index:1045; }
+  .shell { margin-left:0; }
+  .topbar { left:0; }
+  .navigation-toggle { display:inline-flex; min-width:44px; min-height:44px; padding:10px; }
+  .navigation-close { display:block; position:absolute; right:16px; top:24px; padding:8px; }
+  .sidebar .brand { padding-right:58px; }
+}
+/* Approved Stitch tablet layouts, 768 × 1024. No mobile redesign in this iteration. */
+@media screen and (min-width:768px) and (max-width:1199px) {
+  .sidebar { width:320px!important; max-width:85vw; }
+  .sidebar .brand { height:80px; padding-left:24px; }
+  .sidebar nav { padding:0 24px; }
+  .sidebar .nav-link { min-height:48px; padding:14px 16px; border-radius:12px; }
+  .sidebar .nav-label { margin-left:24px; }
+  .topbar { padding:0 24px; background:#f7f9fbee; }
+  .breadcrumbs { gap:12px; }
+  .breadcrumbs>strong,.breadcrumbs>.icon { display:none; }
+  .header-brand { font-size:16px; font-weight:600; letter-spacing:-.3px; }
+  .tablet-brand-mark { display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:8px; background:var(--primary); color:white; margin-right:-4px; }
+  .tablet-currency { display:inline-block; color:var(--primary); font-size:11px; padding:2px 4px; background:#85f8c433; border-radius:4px; margin-left:4px; }
+  .store-pill { min-height:44px; border-radius:999px; }
+  .main { padding:88px 24px 24px; max-width:1024px; }
+  .page-heading { margin-bottom:24px; align-items:flex-start; }
+  .page-heading h1 { font-size:24px; line-height:32px; }
+  .page-heading p { max-width:100%; }
+  .scope-chip { align-self:center; flex-shrink:0; }
+  .metric-grid { gap:16px; }
+  .dashboard-metrics .metric { padding:20px; min-height:152px; }
+  .metric-top>span:first-child { text-transform:none; letter-spacing:0; font-weight:500; }
+  .dashboard-metrics .metric:first-child>strong { font-size:32px; }
+  .overview-grid,.overview-primary { gap:24px; }
+  .rhythm-card .panel-heading { padding:20px 20px 0; }
+  .rhythm-chart { height:208px; padding:24px 28px 16px; gap:12px; }
+  .chart-bar { max-width:40px; }
+  .stock-watch .panel-heading { padding:20px; }
+  .stock-item { margin:0 20px 12px; }
+  .catalog-page .main { padding-left:32px; padding-right:32px; }
+  .catalog-page .page-heading { margin-bottom:16px; }
+  .catalog-page .catalog-metrics { grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-bottom:16px; }
+  .catalog-page .catalog-metrics .metric { min-height:84px; padding:12px; align-items:center; }
+  .catalog-page .catalog-metrics .metric p { display:none; }
+  .catalog-page .catalog-metrics .metric:nth-child(4),.catalog-page .catalog-metrics .metric>div>.desktop-stock-value { display:none; }
+  .catalog-page .catalog-metrics .metric>div>.tablet-stock-value { display:block; }
+  .catalog-page .catalog-metrics .metric strong { font-size:18px; line-height:28px; white-space:normal; }
+  .catalog-page .catalog-metrics .metric-icon { width:32px; height:32px; margin:0; }
+  .catalog-page .catalog-metrics .metric>div>span { font-size:11px; margin:0; }
+  .catalog-panel,.orders-panel { background:transparent; box-shadow:none; overflow:visible; }
+  .filter-bar { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)) auto auto; gap:12px; background:white; border-radius:12px; padding:12px; margin-bottom:16px; box-shadow:0 1px 3px #00000010; }
+  .filter-bar .search-field { grid-column:1/-1; min-width:0; }
+  .filter-bar>div:not(.search-field) { min-width:0; }
+  .form-control,.form-select { min-height:44px; font-size:12px; }
+  .search-field>.icon { top:12px; }
+  .btn,.reset-text { min-height:44px; }
+  .filter-bar .btn { padding-left:10px; padding-right:10px; }
+  .catalog-panel .table-responsive,.orders-panel .table-responsive { background:white; border-radius:12px 12px 0 0; }
+  .pagination-bar { background:white; border-radius:0 0 12px 12px; padding:12px 16px; gap:8px; }
+  .page-link { min-width:44px; height:44px; padding:14px 10px; }
+  .catalog-table { table-layout:fixed; }
+  .catalog-table th,.catalog-table td { padding:12px; }
+  .catalog-table th:first-child,.catalog-table td:first-child { padding-left:16px; width:43%; max-width:none; }
+  .catalog-table th:nth-child(2),.catalog-table td:nth-child(2),
+  .catalog-table th:nth-child(3),.catalog-table td:nth-child(3),
+  .catalog-table th:nth-child(7),.catalog-table td:nth-child(7) { display:none; }
+  .catalog-table th:nth-child(4) { width:22%; }
+  .catalog-table th:nth-child(5) { width:14%; }
+  .catalog-table th:nth-child(6) { width:21%; }
+  .catalog-table .product-thumb { width:48px; height:48px; }
+  .catalog-table .product-cell { gap:12px; }
+  .catalog-table .product-cell strong,.catalog-table .product-cell small { max-width:100%; }
+  .catalog-table .product-name-link { display:block; min-height:24px; }
+  .catalog-table td { height:76px; }
+  .catalog-table .stock-badge { font-size:10px; padding:4px 7px; gap:4px; }
+  .catalog-table .money { font-size:14px; }
+  .inventory-page .catalog-metrics .metric { min-height:128px; padding:16px; }
+  .inventory-page .catalog-metrics .metric strong { font-size:32px; line-height:40px; }
+  .inventory-page .catalog-metrics .metric-icon { width:28px; height:28px; margin:0; }
+  .attention-banner { padding:12px; gap:12px; margin-bottom:24px; }
+  .attention-banner h2 { font-size:14px; line-height:20px; }
+  .attention-banner .btn { border-radius:999px; font-size:11px; }
+  .attention-symbol { flex-shrink:0; width:36px; height:36px; background:#ffdad6; color:var(--danger); }
+  .inventory-table th:first-child,.inventory-table td:first-child { width:41%; }
+  .inventory-table th:nth-child(3),.inventory-table td:nth-child(3) { display:table-cell; width:17%; }
+  .inventory-table th:nth-child(4) { width:18%; }
+  .inventory-table th:nth-child(5),.inventory-table td:nth-child(5) { display:none; }
+  .inventory-table th:nth-child(6) { width:24%; }
+  .inventory-table .category-badge { padding:0; background:none; font-size:11px; white-space:normal; }
+  .inventory-table .product-thumb { width:40px; height:40px; }
+  .inventory-table .product-cell { gap:8px; }
+  .inventory-table .stock-quantity { font-size:20px; }
+  .order-filters { grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) auto auto; }
+  .orders-table th:nth-child(3),.orders-table td:nth-child(3),
+  .orders-table th:nth-child(4),.orders-table td:nth-child(4),
+  .orders-table th:nth-child(7),.orders-table td:nth-child(7) { display:none; }
+  .orders-table th,.orders-table td { padding:12px 16px; }
+  .orders-table td { height:76px; }
+  .orders-table td:first-child a { display:inline-flex; align-items:center; min-height:44px; font-size:13px; }
+  .orders-table time { font-size:12px; }
+  .tablet-payment { display:block; font-size:11px; line-height:16px; color:var(--secondary); font-weight:400; margin-top:4px; }
+  .receipt-page .main { display:grid; gap:24px; }
+  .receipt-header,.receipt-header .order-heading,.receipt-grid,.financial-summary { display:contents; }
+  .receipt-header .back-link { grid-row:1; margin:0; font-size:14px; min-height:24px; }
+  .receipt-header .order-heading>div { grid-row:2; padding:24px; background:white; border-radius:12px; box-shadow:0 1px 3px #00000010; }
+  .receipt-header .order-meta { margin-top:8px; }
+  .purchased-items { grid-row:3; }
+  .summary-content { grid-row:4; }
+  .payment-content { grid-row:5; }
+  .summary-content,.payment-content { background:white; padding:24px; border-radius:12px; box-shadow:0 1px 3px #00000010; }
+  .print-receipt { grid-row:6; justify-self:start; }
+  .receipt-note { grid-row:7; margin:0; }
+  .receipt-table td { height:96px; }
+  .receipt-table .product-cell strong { max-width:250px; font-size:14px; }
+  .receipt-table .product-thumb { padding:0; object-fit:cover; }
+  .receipt-table th:nth-child(2),.receipt-table td:nth-child(2) { display:none; }
+  .receipt-table .money { font-size:16px; }
+  .tablet-unit { display:block; margin-top:4px; font-size:11px; }
+  .receipt-totals dt,.receipt-totals dd { font-size:14px; line-height:20px; }
+  .grand-total { background:var(--primary-container); color:white; padding:16px; margin:20px 0 0; }
+  .grand-total>span { color:white; text-transform:uppercase; letter-spacing:.5px; }
+  .grand-total strong { font-size:32px; }
+  .payment-content .section-label { margin:0 0 16px; text-transform:none; font-size:16px; line-height:24px; font-weight:600; color:var(--ink); }
+  .payment-card { padding:12px; }
+  .payment-card strong { font-size:14px; }
+  .payment-card small { font-size:12px; }
 }
 @media print {
   @page {
