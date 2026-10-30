@@ -6,7 +6,7 @@ A server-rendered retail operations workspace built with ASP.NET Core MVC 10 and
 
 ## Desktop UI — Stitch iteration 1
 
-The five approved Google Stitch desktop screens are translated into reusable Razor Views, Bootstrap components and custom CSS. The acceptance viewport is **1440 × 900**. This iteration does not implement the future tablet/mobile designs; the existing narrow-screen fallback is retained without a new visual-parity claim.
+The five approved Google Stitch desktop screens are translated into reusable Razor Views, Bootstrap components and custom CSS. The acceptance viewport is **1440 × 900**. Desktop remains the regression baseline. The tablet iteration below adds the approved 768 × 1024 layouts; mobile designs remain deferred.
 
 - Dark slate 256px sidebar, fixed 64px header, local Inter typography and Material Symbols, restrained emerald/neutral surfaces.
 - Overview: four real KPI cards, a completed-order hourly chart, recent receipts and stock alerts.
@@ -16,6 +16,14 @@ The five approved Google Stitch desktop screens are translated into reusable Raz
 - Order details: persisted purchased items, halala-based line display, backend subtotal/discount/VAT/total values and a functioning print-friendly receipt.
 
 See [visual review and deliberate adaptations](docs/desktop-visual-review.md) and [asset provenance](docs/design-assets.md).
+
+## Tablet UI — Stitch iteration 2
+
+At **768 × 1024**, the shared shell uses a compact 64px branded header and a 320px dark-slate Bootstrap offcanvas drawer. Navigation supports touch, keyboard, Escape, focus trapping and restored trigger focus. The expanded 256px desktop sidebar remains at widths of 1200px and above.
+
+The five shared Razor pages adapt with two-column overview/inventory cards, three catalog summaries, four-column Products and Orders tables, and a vertically stacked receipt with one Print Receipt action after Payment Method. Product names open the same read-only details; all existing searches, filters, sorting and pagination remain available. No controller, monetary calculation, API contract or POS change is required.
+
+See [tablet visual review](docs/tablet-visual-review.md). CI runs all 15 shared browser tests at each viewport plus four tablet-specific tests, with zero retries. Reports include both sets of screenshots and receipt PDFs.
 
 ## Pages
 

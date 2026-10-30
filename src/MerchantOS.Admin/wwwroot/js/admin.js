@@ -2,12 +2,16 @@
 (function ($) {
   'use strict';
   $(document).on('keydown', function (event) { if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k' && $('#global-search').is(':visible')) { event.preventDefault(); $('#global-search').trigger('focus'); } });
+  $('#sidebar').on('shown.bs.offcanvas hidden.bs.offcanvas', function (event) {
+    $('.navigation-toggle').attr('aria-expanded', event.type === 'shown' ? 'true' : 'false');
+  });
   $('.print-receipt').on('click', function () { window.print(); });
   $('.order-filters select').on('change', function () { this.form.requestSubmit(); });
-  var drawerRequest, drawerSequence = 0;
+  var drawerRequest, drawerSequence = 0, drawerTrigger;
   $(document).on('click', '.product-detail-link', function (event) {
     if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
     event.preventDefault();
+    drawerTrigger = this;
     var href = $(this).attr('href'), current = ++drawerSequence;
     if (drawerRequest) drawerRequest.abort();
     var body = $('#product-drawer-body').empty().append($('<p>', {class:'loading-text',text:'Loading product details…'}));
@@ -19,7 +23,7 @@
       body.empty().append($('<p>', {role:'alert',text:'Unable to load product details. Please try again.'}), $('<a>',{href:href,text:'Open full product page'}));
     });
   });
-  $('#product-drawer').on('hidden.bs.offcanvas', function () { drawerSequence++; if (drawerRequest) drawerRequest.abort(); });
+  $('#product-drawer').on('hidden.bs.offcanvas', function () { drawerSequence++; if (drawerRequest) drawerRequest.abort(); if (drawerTrigger && drawerTrigger.isConnected) drawerTrigger.focus(); });
   var form = $('#catalog-filters');
   if (!form.length) return;
   var pending, sequence = 0, timer;
