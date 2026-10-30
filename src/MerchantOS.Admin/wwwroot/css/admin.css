@@ -1622,7 +1622,7 @@ a:focus-visible,button:focus-visible {
   .shell { margin-left:0; }
   .topbar { left:0; }
   .navigation-toggle { display:inline-flex; min-width:44px; min-height:44px; padding:10px; }
-  .navigation-close { display:block; position:absolute; right:16px; top:24px; padding:8px; }
+  .navigation-close { display:block; position:absolute; right:16px; top:18px; width:44px; height:44px; padding:14px; background-size:14px; }
   .sidebar .brand { padding-right:58px; }
 }
 /* Approved Stitch tablet layouts, 768 × 1024. No mobile redesign in this iteration. */

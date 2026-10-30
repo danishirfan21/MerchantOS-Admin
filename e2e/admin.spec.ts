@@ -17,6 +17,7 @@ for (const [name,path,heading] of pages) {
   await expect(page.locator('#main')).toBeVisible();
   if(name==='overview') await expect(page.locator('.dashboard-metrics .metric').nth(2).locator('strong')).toHaveText('30');
   await page.screenshot({path:'test-results/'+testInfo.project.name+'/'+name+'.png',fullPage:false});
+  if(testInfo.project.name==='tablet') await page.screenshot({path:'test-results/tablet/'+name+'-full.png',fullPage:true});
  });
 }
 test('sidebar navigation preserves active state', async ({page},testInfo) => {
@@ -81,13 +82,13 @@ test('inventory attention filter uses authoritative stock', async ({page}) => {
  await page.getByRole('link',{name:'Next',exact:true}).click();
  await expect(page).toHaveURL(/\/Admin\/Inventory.*page=2/);
 });
-test('orders browse persisted receipts and filter payment', async ({page}) => {
+test('orders browse persisted receipts and filter payment', async ({page},testInfo) => {
  await page.goto('/Admin/Orders');
  await page.getByLabel('Payment method',{exact:true}).selectOption('cash');
  await expect(page).toHaveURL(/payment=cash/);
- const methods=await page.locator('tbody .payment-label').allTextContents();
+ const methods=await page.locator(testInfo.project.name==='tablet'?'tbody .tablet-payment':'tbody .payment-label').allTextContents();
  expect(methods.length).toBeGreaterThan(0); expect(methods.every(v=>v.includes('Cash'))).toBeTruthy();
- await page.locator('tbody .row-action').first().click();
+ await page.locator(testInfo.project.name==='tablet'?'tbody td:first-child a':'tbody .row-action').first().click();
  await expect(page.getByRole('heading',{name:'Purchased Items',exact:false})).toBeVisible();
 });
 test('receipt preserves backend total and print action', async ({page},testInfo) => {

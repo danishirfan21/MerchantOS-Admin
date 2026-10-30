@@ -18,6 +18,8 @@ The inventory reference's separate action column is replaced by the linked produ
 
 Rendered the supplied reference HTML and running MVC app in Chromium at 768 × 1024, capturing all five pages and full-height receipts/dashboard for lower sections. Initial local visual review used the explicit seed contract fixture for layout only, never as real integration evidence. Checked margins, header, card proportions, table readability, section order and document/table overflow. Corrected the drawer backdrop stacking, touch target for Reset filters, catalog three-card arrangement, and receipt unit-price visibility. No new runtime Tailwind, fonts, CDN or images are required by MVC.
 
+A separate pristine checkout of merged main was rendered beside the tablet branch with identical local data at 1440 × 900. All five resulting desktop screenshots were pixel-identical (zero differing pixels). All 15 existing desktop browser tests also passed locally. This comparison establishes presentation preservation; it is separate from real database verification in CI.
+
 The raw reference font/image URLs are fetched only into the scratch comparison render where available; availability does not affect the application. Actual content differs from illustrative Stitch data, so exact pixel parity is not claimed. Catalog valuation, per-SKU thresholds, store/terminal identities, customer/compliance/payment-ledger text, notification/settings/account controls and invented item counts are intentionally omitted. The real five-unit demo threshold, latest-100-order scope and backend monetary values take precedence.
 
 ## Automated evidence

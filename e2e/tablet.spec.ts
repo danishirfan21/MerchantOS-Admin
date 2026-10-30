@@ -7,6 +7,7 @@ test('drawer supports touch, Escape, focus trapping and focus restoration',async
  await trigger.tap();
  await expect(trigger).toHaveAttribute('aria-expanded','true');
  await expect(page.getByRole('dialog',{name:'MerchantOS'})).toBeVisible();
+ await page.screenshot({path:'test-results/tablet/navigation.png'});
  await page.getByRole('button',{name:'Close navigation',exact:true}).focus();
  await page.keyboard.press('Tab');
  expect(await page.locator('#sidebar').evaluate(el=>el.contains(document.activeElement))).toBeTruthy();
@@ -57,6 +58,8 @@ test('tablet forms and tables fit and receipt has one final print action',async(
   await page.goto(url);
   const problems=await page.locator('.filter-bar input,.filter-bar select,.filter-bar button,.filter-bar a').evaluateAll(es=>es.filter(e=>{const r=e.getBoundingClientRect();return r.width>0&&(r.left<0||r.right>innerWidth||r.height<40);}).map(e=>e.outerHTML));
   expect(problems).toEqual([]);
+  const overlap=await page.locator('.filter-bar input,.filter-bar select,.filter-bar button,.filter-bar a').evaluateAll(es=>{const rs=es.map(e=>e.getBoundingClientRect()).filter(r=>r.width>0);return rs.some((a,i)=>rs.slice(i+1).some(b=>Math.min(a.right,b.right)>Math.max(a.left,b.left)+1&&Math.min(a.bottom,b.bottom)>Math.max(a.top,b.top)+1));});
+  expect(overlap).toBeFalsy();
   expect(await page.locator('.table-responsive').evaluateAll(es=>es.every(e=>e.scrollWidth<=e.clientWidth))).toBeTruthy();
  }
  const orders=await (await page.request.get('http://127.0.0.1:5080/api/orders')).json();
