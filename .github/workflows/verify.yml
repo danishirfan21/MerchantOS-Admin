@@ -26,7 +26,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: danishirfan21/MerchantOS-POS
-          ref: 3befb2cc170b879c88f0b1fff7d3b48df0073210
+          ref: a594c3bd8b310dcd45864272295baf8e19b05163
           path: reference-pos
       - uses: actions/setup-dotnet@v4
         with:
@@ -55,6 +55,7 @@ jobs:
       - name: Build authentication-enabled POS and provision isolated identities
         run: |
           dotnet build reference-pos/services/merchant-api/MerchantOS.Api.csproj -c Release
+          dotnet test reference-pos/services/merchant-api.Tests/MerchantOS.Api.Tests.csproj -c Release
           python3 reference-pos/scripts/ci_accounts.py
       - name: Start real POS API and verify checkout fixture
         env:
