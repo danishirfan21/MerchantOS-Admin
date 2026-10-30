@@ -214,3 +214,7 @@ img[src="/products/galaxy-s24.jpg"] { content:url("/products/mobile/galaxy-s24.j
 img[src="/products/sony-xm5.jpg"] { content:url("/products/mobile/sony-xm5.jpg"); }
 img[src="/products/airpods-pro.jpg"] { content:url("/products/mobile/airpods-pro.jpg"); }
 img[src="/products/watch6.jpg"] { content:url("/products/mobile/watch6.jpg"); }
+/* Keep the attention panel compact while retaining its accessible filter link. */
+.attention-banner { flex-wrap:nowrap; }
+.attention-banner .btn { width:44px; min-width:44px; padding:0; font-size:0; flex-shrink:0; }
+.attention-banner .btn .icon { font-size:20px; }
