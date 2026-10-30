@@ -27,3 +27,7 @@ Traces are disabled because traces can contain cookies/password bodies. Temporar
 ## Limits
 
 This remains a local demo and is not approved for public deployment. MFA, password recovery/change, production account administration, detailed security audit logs, production encrypted key storage and distributed throttling are future work. POS owns all authorization; new backend endpoints deny by default until explicitly classified. The Administrator role is not checkout permission. No business editing, inventory adjustment, real payment processing or refunds are introduced.
+
+## Executed evidence
+
+[Implementation CI 41138596485](https://github.com/danishirfan21/MerchantOS-Admin/actions/runs/41138596485) passed 39 Admin .NET, 9 POS .NET, three template and all 61 browser checks, with real authenticated API/PostgreSQL requests and 38 direct security/log assertions. [Screenshots and print reports](https://github.com/danishirfan21/MerchantOS-Admin/actions/runs/41138596485/artifacts/13017426719) cover the fifteen protected variants plus responsive login forms. One preexisting mobile test now explicitly waits for authenticated navigation to load before asserting AJAX behavior; its filtering assertions are unchanged. Final-head verification is linked in PR #5, pinned to the final POS security revision.
