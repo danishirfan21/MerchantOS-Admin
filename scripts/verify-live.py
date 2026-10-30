@@ -1,9 +1,19 @@
+import sys,os,http.cookiejar,re
+from pathlib import Path
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"reference-pos/scripts"))
+from auth_client import Client
+pos_auth=Client("ADMIN")
 """Read-only integration verification against the pinned POS fixture and Admin."""
 import json, urllib.request
 POS='http://127.0.0.1:5080'; ADMIN='http://127.0.0.1:5090'
 def read(url):
- with urllib.request.urlopen(url,timeout=15) as response: return response.read().decode()
+ with pos_auth.opener.open(url,timeout=15) as response: return response.read().decode()
 def data(path): return json.loads(read(POS+path))
+login_html=read(ADMIN+'/Account/Login')
+csrf=re.search(r'name="__RequestVerificationToken"[^>]*value="([^"]+)"',login_html).group(1)
+from urllib.parse import urlencode
+req=urllib.request.Request(ADMIN+'/Account/Login',data=urlencode({'Username':os.environ['TEST_ADMIN_USERNAME'],'Password':os.environ['TEST_ADMIN_PASSWORD'],'ReturnUrl':'/','__RequestVerificationToken':csrf}).encode())
+with pos_auth.opener.open(req,timeout=20) as response: assert response.status==200
 products=data('/api/products'); assert len(products)==30
 for product in products:
  assert data('/api/inventory/'+product['id'])['stock']==product['stock']

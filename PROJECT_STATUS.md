@@ -1,3 +1,9 @@
+# Authentication integration milestone
+
+Branch `feature/auth-integration`, based on responsive main `64b278a180083998c6888a5d1effc83dd85cbd7c`. Depends on POS security PR #3 and its exact pinned revision. Native server-managed Admin sessions, role validation on each request, secure login/logout, safe local returns, CSRF, pooled-client isolation and identity indicators implemented. Original business views/calculations preserved. Local .NET verification and real CI results pending final execution. No automatic merge or deployment. See docs/authentication.md.
+
+## Previous responsive verification (historical)
+
 # MerchantOS Admin — mobile iteration 3
 
 Updated 31 October 2026 (Asia/Karachi).
