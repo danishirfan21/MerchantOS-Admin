@@ -22,7 +22,7 @@ The original 33 .NET tests are preserved; rendering-only tests install an isolat
 
 CI generates and masks random passwords, provisions four temporary users in its isolated PostgreSQL, and pins the POS auth commit. Backend security checks additionally verify forged credentials/roles, 401/403, cashier ownership, CSRF, revoked/expired/disabled sessions, account lockout and IP throttling. All existing checkout arithmetic, idempotency and concurrency checks continue with authenticated Cashier sessions.
 
-Traces are disabled because traces can contain cookies/password bodies. Temporary storage state files are mode 0600 under `/tmp` and never uploaded. Test password fields are populated without secret-bearing fill step titles; no screenshots are taken during credential entry. Reports include logged-in screens and empty login forms only. No production credentials or signing keys are committed.
+Traces are disabled because traces can contain cookies/password bodies. Temporary storage state files are mode 0600 under `/tmp` and never uploaded. A fail-closed upload gate scans files and embedded HTML report archives for actual ephemeral passwords and protected Data Protection cookie/CSRF values; findings block artifact upload. Test password fields are populated without secret-bearing fill step titles; no screenshots are taken during credential entry. Reports include logged-in screens and empty login forms only. No production credentials or signing keys are committed.
 
 ## Limits
 
