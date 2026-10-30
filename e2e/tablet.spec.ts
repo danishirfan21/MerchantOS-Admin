@@ -41,7 +41,8 @@ test('tablet order search, UTC date filter and pagination use the returned windo
  await page.getByRole('button',{name:'Search',exact:true}).click();
  await expect(page.locator('tbody tr')).toHaveCount(1);
  await page.getByRole('link',{name:'Reset filters',exact:true}).click();
- if(orders.length>7){
+ expect(orders.length).toBeGreaterThan(7);
+ {
   const first=await page.locator('tbody tr').first().innerText();
   await page.getByRole('link',{name:'Next',exact:true}).click();
   await expect(page).toHaveURL(/page=2/);

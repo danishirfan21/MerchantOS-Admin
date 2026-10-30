@@ -1615,7 +1615,7 @@ a:focus-visible,button:focus-visible {
 /* Shared identity links preserve desktop typography. */
 .product-name-link { color:inherit; }
 .admin-table .product-name-link { font-size:inherit; }
-.tablet-stock-value,.catalog-metrics .metric>div>.tablet-stock-value,.tablet-unit,.tablet-payment,.tablet-currency,.tablet-brand-mark,.navigation-close { display:none; }
+.product-cell .tablet-unit,.tablet-stock-value,.catalog-metrics .metric>div>.tablet-stock-value,.tablet-unit,.tablet-payment,.tablet-currency,.tablet-brand-mark,.navigation-close { display:none; }
 .navigation-toggle { display:none; }
 @media(max-width:1199px) {
   .sidebar { z-index:1045; }
@@ -1732,7 +1732,7 @@ a:focus-visible,button:focus-visible {
   .receipt-table .product-thumb { padding:0; object-fit:cover; }
   .receipt-table th:nth-child(2),.receipt-table td:nth-child(2) { display:none; }
   .receipt-table .money { font-size:16px; }
-  .tablet-unit { display:block; margin-top:4px; font-size:11px; }
+  .receipt-table .tablet-unit { display:block; margin-top:4px; font-size:11px; }
   .receipt-totals dt,.receipt-totals dd { font-size:14px; line-height:20px; }
   .grand-total { background:var(--primary-container); color:white; padding:16px; margin:20px 0 0; }
   .grand-total>span { color:white; text-transform:uppercase; letter-spacing:.5px; }

@@ -59,6 +59,7 @@ jobs:
           curl -fsS http://127.0.0.1:5080/api/health
           python3 reference-pos/scripts/verify_live_api.py
           python3 reference-pos/scripts/verify_checkout.py
+          python3 scripts/seed-browser-orders.py
       - name: Start MVC and verify live integration
         env:
           ASPNETCORE_URLS: http://127.0.0.1:5090
