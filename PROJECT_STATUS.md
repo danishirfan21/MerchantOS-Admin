@@ -1,4 +1,42 @@
-# MerchantOS Admin — tablet iteration 2
+# MerchantOS Admin — mobile iteration 3
+
+Updated 31 October 2026 (Asia/Karachi).
+
+Branch: `feature/stitch-mobile`, based on merged tablet main `7fadb7df5266a58fd0fd2624cca94d1e6d372e6a`. Desktop PR #2 and tablet PR #3 are merged. [Mobile PR #4](https://github.com/danishirfan21/MerchantOS-Admin/pull/4) targets main and remains unmerged.
+
+## Implemented
+
+All five supplied Stitch mobile sources inspected and rendered at 390 × 844: Overview, Products, Inventory, Orders and Order Details. Shared compact header and four-link bottom navigation; actual-data KPI grid/chart; synchronized product and inventory cards; order cards; full-width product drawer; stacked receipt with a back header and one print action. Native search/filter/sort forms preserve existing backend behavior and no-JavaScript fallbacks. No mobile bottom bar on receipts.
+
+Mobile screen CSS is isolated below 768px. Shared business calculations, read-only API access, UTC semantics, seven-row pagination, latest-100-order window, five-unit demo stock rule and print styles remain unchanged. The three template checks now verify both product table and card templates. A four-glyph local icon subset and the supplied five mobile product illustrations are used only by the mobile presentation.
+
+## Executed local verification
+
+- Release build: passed, zero warnings/errors.
+- .NET tests: 33 passed, zero failed/skipped.
+- Template checks: 3 passed, zero failed, both card/table templates checked.
+- Mobile presentation checks: 14 passed, zero failed, using the explicit local contract fixture. These do not verify the real API/database. The additional real-order search/date/payment/pagination test runs in CI against ten persisted receipts.
+- Desktop and tablet: all ten viewport screenshots pixel-identical to pristine merged main under identical local fixture data. All 15 desktop and 18 locally applicable tablet checks passed; the remaining tablet order-pagination test requires live CI.
+
+## Real integration and complete responsive verification
+
+Passing implementation snapshot: `4a690b1424d60d10dff0ec8d8d690a5422c9e956`.
+
+- [Passing GitHub Actions run 41118720798](https://github.com/danishirfan21/MerchantOS-Admin/actions/runs/41118720798).
+- 33 .NET tests, 3 template checks, 15 desktop + 19 tablet + 15 mobile Chromium tests passed. Zero failures, skips or retries; Release builds zero warnings/errors.
+- Actual pinned POS API + PostgreSQL 17 schema/seed/migrations and checkout/idempotency/concurrency checks passed. All 30 catalog/detail/inventory records, 10 persisted receipts and four primary routes verified.
+- [Actual screenshots across all 15 screen variants, full-page tablet/mobile captures, mobile navigation/drawer captures, all three print PDFs, browser/TRX reports and logs](https://github.com/danishirfan21/MerchantOS-Admin/actions/runs/41118720798/artifacts/13006868298).
+- Additional mobile inventory refinement: compact attention-panel icon link retains its accessible filter name and 44px target. Its rendering, filters, 390/360px control fit and clearance checks passed locally.
+
+The final refinement/documentation commit runs the complete suite again. Final-head CI/artifact links are recorded in PR #4. No desktop/tablet test file was modified.
+
+## Visual review and scope
+
+See [mobile visual review](docs/mobile-visual-review.md). No edits to POS, writes, second database, refund/payment-provider logic or public deployment. Illustrative Stitch customer/terminal/compliance/analytics data and unsupported add/export/settings/send-receipt controls are omitted. Desktop and tablet layouts are regression baselines. Historical tablet evidence follows.
+
+---
+
+# Tablet iteration 2 verification (historical)
 
 Updated 31 October 2026 (Asia/Karachi).
 

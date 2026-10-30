@@ -1821,3 +1821,8 @@ a:focus-visible,button:focus-visible {
 .header-search kbd {font-family:Inter,Arial,sans-serif;font-size:11px;background:#e0e3e5;color:var(--secondary);padding:1px 4px;white-space:nowrap;}
 @media(max-width:1199px) {.header-search{display:none;}}
 @media print {.header-search{display:none;}}
+
+/* Mobile-only presentation nodes stay absent from desktop, tablet and print. */
+.mobile-bottom-nav,.mobile-product-list,.mobile-order-list,.mobile-receipt-bar,.mobile-store { display:none; }
+
+.mobile-filter-toggle { display:none; }

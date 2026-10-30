@@ -6,7 +6,7 @@ A server-rendered retail operations workspace built with ASP.NET Core MVC 10 and
 
 ## Desktop UI — Stitch iteration 1
 
-The five approved Google Stitch desktop screens are translated into reusable Razor Views, Bootstrap components and custom CSS. The acceptance viewport is **1440 × 900**. Desktop remains the regression baseline. The tablet iteration below adds the approved 768 × 1024 layouts; mobile designs remain deferred.
+The five approved Google Stitch desktop screens are translated into reusable Razor Views, Bootstrap components and custom CSS. The acceptance viewport is **1440 × 900**. Desktop remains the regression baseline. The tablet iteration below adds the approved 768 × 1024 layouts; the mobile iteration below completes the approved responsive layouts.
 
 - Dark slate 256px sidebar, fixed 64px header, local Inter typography and Material Symbols, restrained emerald/neutral surfaces.
 - Overview: four real KPI cards, a completed-order hourly chart, recent receipts and stock alerts.
@@ -24,6 +24,14 @@ At **768 × 1024**, the shared shell uses a compact 64px branded header and a 32
 The five shared Razor pages adapt with two-column overview/inventory cards, three catalog summaries, four-column Products and Orders tables, and a vertically stacked receipt with one Print Receipt action after Payment Method. Product names open the same read-only details; all existing searches, filters, sorting and pagination remain available. No controller, monetary calculation, API contract or POS change is required.
 
 See [tablet visual review](docs/tablet-visual-review.md). CI runs all 15 shared browser tests at each viewport plus four tablet-specific tests, with zero retries. Reports include both sets of screenshots and receipt PDFs.
+
+## Mobile UI — Stitch iteration 3
+
+The approved **390 × 844** experience completes the five pages with a compact header, four-destination bottom navigation, two-column KPIs, product/inventory/order cards and a vertical receipt. The receipt uses a back header and one final Print Receipt action. Bottom navigation respects safe-area insets and reserves content clearance; a 360px overflow check is included.
+
+Mobile cards share the same server data, paging state and AJAX response as desktop/tablet tables. Category and stock filters remain visible; More filters & sorting reveals numeric sorting and fallback submit/reset controls. Without JavaScript all GET form controls remain exposed, and bottom links and product pages work normally. The existing product drawer fills mobile width with keyboard/touch dismissal and restored focus.
+
+Mobile CSS loads only for screen widths below 768px, preserving print, desktop and tablet styling. No frontend framework, backend write endpoint, API request duplication or additional database is introduced. CI runs **15 desktop, 19 tablet and 15 mobile tests**, all 33 .NET tests, the three escaping/runtime checks across both product templates, and the real POS/PostgreSQL integration fixture. See [mobile visual review](docs/mobile-visual-review.md) and [project status](PROJECT_STATUS.md) for executed evidence.
 
 ## Pages
 

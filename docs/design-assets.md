@@ -8,3 +8,9 @@
 - All application fonts, icons, thumbnails, CSS and JavaScript are served locally under the existing restrictive CSP. No Google Fonts or Tailwind CDN request is required at runtime.
 
 The optional `scripts/visual-review.cjs` expects the supplied reference HTML (named `overview.html`, `products.html`, `inventory.html`, `orders.html`, `order-details.html`) and assets to be served on local port 5091. It captures reference and actual MVC pages at 1440 × 900 into `../desktop-review`. This is a manual comparison helper; CI uses the actual app's Playwright suite without a mock/reference application.
+
+## Iteration 3 mobile assets
+
+`wwwroot/products/mobile/` contains the five mobile product images from the supplied Stitch Products source, matched to the same five seeded product identities. Mobile-only CSS selects them without altering larger-screen or printed images. Remaining products use the existing local category SVGs.
+
+`fonts/mobile-symbols.ttf` is a four-icon Unicode subset (dashboard, inventory_2, storefront, receipt_long) of Google Material Symbols Outlined, weight 400. The existing Apache 2.0 Material Symbols license applies. It is used only by mobile bottom navigation and adds no runtime external request.
