@@ -1,0 +1,7 @@
+@{ var action = ViewContext.RouteData.Values["action"]?.ToString(); }
+<nav class="mobile-bottom-nav" aria-label="Mobile navigation">
+@foreach(var item in new[] { ("Index", "Overview", ""), ("Products", "Products", ""), ("Inventory", "Inventory", ""), ("Orders", "Orders", "") }) {
+ var active = action == item.Item1 || (item.Item1 == "Products" && action == "Product");
+ <a asp-action="@item.Item1" asp-controller="Admin" aria-current="@(active ? "page" : null)"><span class="icon" aria-hidden="true">@item.Item3</span><span>@item.Item2</span></a>
+}
+</nav>

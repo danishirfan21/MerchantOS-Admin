@@ -1,0 +1,4 @@
+@model List<OrderDto>
+<div class="mobile-order-list">
+@foreach(var order in Model) { <article class="mobile-order-card"><div class="mobile-order-heading"><a asp-action="Order" asp-route-id="@order.Id">@order.OrderNumber</a><span class="stock-badge success">@order.Status</span></div><div class="mobile-order-meta"><time datetime="@order.CreatedAt.ToUniversalTime().ToString("O")">@order.CreatedAt.ToUniversalTime().ToString("dd MMM yyyy · HH:mm") UTC</time><span>@Display.Payment(order.PaymentMethod)</span></div><div class="mobile-order-footer"><div><small>Total</small><strong>@Display.Money(order.PayableHalalas, order.Currency)</strong></div><a class="btn btn-emerald" asp-action="Order" asp-route-id="@order.Id">View Details <span class="icon" aria-hidden="true">arrow_forward</span></a></div></article> }
+</div>

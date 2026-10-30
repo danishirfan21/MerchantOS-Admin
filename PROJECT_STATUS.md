@@ -1,4 +1,30 @@
-# MerchantOS Admin — tablet iteration 2
+# MerchantOS Admin — mobile iteration 3
+
+Updated 31 October 2026 (Asia/Karachi).
+
+Branch: `feature/stitch-mobile`, based on merged tablet main `7fadb7df5266a58fd0fd2624cca94d1e6d372e6a`. Desktop PR #2 and tablet PR #3 are merged. The mobile PR will target main and remain unmerged.
+
+## Implemented
+
+All five supplied Stitch mobile sources inspected and rendered at 390 × 844: Overview, Products, Inventory, Orders and Order Details. Shared compact header and four-link bottom navigation; actual-data KPI grid/chart; synchronized product and inventory cards; order cards; full-width product drawer; stacked receipt with a back header and one print action. Native search/filter/sort forms preserve existing backend behavior and no-JavaScript fallbacks. No mobile bottom bar on receipts.
+
+Mobile screen CSS is isolated below 768px. Shared business calculations, read-only API access, UTC semantics, seven-row pagination, latest-100-order window, five-unit demo stock rule and print styles remain unchanged. The three template checks now verify both product table and card templates. A four-glyph local icon subset and the supplied five mobile product illustrations are used only by the mobile presentation.
+
+## Executed local verification
+
+- Release build: passed, zero warnings/errors.
+- .NET tests: 33 passed, zero failed/skipped.
+- Template checks: 3 passed, zero failed, both card/table templates checked.
+- Mobile presentation checks: 14 passed, zero failed, using the explicit local contract fixture. These do not verify the real API/database. The additional real-order search/date/payment/pagination test runs in CI against ten persisted receipts.
+- Desktop/tablet identical-data screenshot regression comparison and real full integration CI: in progress; final results will be recorded after execution.
+
+## Visual review and scope
+
+See [mobile visual review](docs/mobile-visual-review.md). No edits to POS, writes, second database, refund/payment-provider logic or public deployment. Illustrative Stitch customer/terminal/compliance/analytics data and unsupported add/export/settings/send-receipt controls are omitted. Desktop and tablet layouts are regression baselines. Historical tablet evidence follows.
+
+---
+
+# Tablet iteration 2 verification (historical)
 
 Updated 31 October 2026 (Asia/Karachi).
 

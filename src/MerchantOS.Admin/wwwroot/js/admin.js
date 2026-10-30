@@ -1,6 +1,8 @@
 /* Progressive enhancement. Server-side GET forms and record links remain the fallback. */
 (function ($) {
   'use strict';
+  document.documentElement.classList.add('mobile-enhanced');
+  $('#mobile-filter-toggle').on('click', function () { var open = this.getAttribute('aria-expanded') !== 'true'; this.setAttribute('aria-expanded', String(open)); $('#catalog-filters').toggleClass('mobile-filters-open', open); });
   $(document).on('keydown', function (event) { if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k' && $('#global-search').is(':visible')) { event.preventDefault(); $('#global-search').trigger('focus'); } });
   $('#sidebar').on('shown.bs.offcanvas hidden.bs.offcanvas', function (event) {
     $('.navigation-toggle').attr('aria-expanded', event.type === 'shown' ? 'true' : 'false');
@@ -32,7 +34,7 @@
     var current = ++sequence;
     if (pending) pending.abort();
     $('#filter-status').text('Loading products…');
-    $('#product-rows').attr('aria-busy', 'true');
+    $('#product-rows, #product-cards').attr('aria-busy', 'true');
     var query = form.serialize() + '&page=' + (page || 1) + '&inventory=' + inventory;
     pending = $.ajax({url:form.data('endpoint'), data:query, dataType:'json'});
     pending.done(function (result) {
@@ -41,13 +43,14 @@
         return Object.assign({}, row, {detailUrl:'/Admin/Product/' + encodeURIComponent(row.id)});
       });
       $('#product-rows').html(Handlebars.templates.products({products:products,inventory:inventory}));
+      $('#product-cards').html(Handlebars.templates['product-cards']({products:products,inventory:inventory}));
       $('#result-pagination').html(Handlebars.templates.pagination(result));
       $('#filter-status').text(result.pager.total + ' products found.');
       history.replaceState(null, '', location.pathname + '?' + query);
     }).fail(function (_, status) {
       if (current !== sequence || status === 'abort') return;
       $('#filter-status').text('Unable to refresh products. Previous results remain visible. Apply filters to retry.');
-    }).always(function () { if (current === sequence) $('#product-rows').removeAttr('aria-busy'); });
+    }).always(function () { if (current === sequence) $('#product-rows, #product-cards').removeAttr('aria-busy'); });
   }
   form.on('submit', function (event) { event.preventDefault(); clearTimeout(timer); load(1); });
   form.find('select').on('change', function () { clearTimeout(timer); load(1); });

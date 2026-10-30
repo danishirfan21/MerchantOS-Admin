@@ -1,0 +1,13 @@
+@model CatalogVm
+<div id="product-cards" class="mobile-product-list" aria-label="@(Model.Inventory ? "Inventory products" : "Product catalog")">
+@foreach(var product in Model.Products) {
+ <article class="mobile-product-card @(Model.Inventory ? "mobile-inventory-card" : "")">
+ <div class="mobile-product-identity"><img src="@product.ImageUrl" alt="" width="56" height="56"><div><div class="mobile-card-topline"><span>@product.Category</span><span class="stock-badge @product.StatusClass">@product.StockStatus</span></div><h2><a class="product-detail-link" asp-action="Product" asp-route-id="@product.Id">@product.Name</a></h2><p>@product.Sku</p></div></div>
+ <div class="mobile-product-footer">
+ @if(!Model.Inventory) { <div><small>Price (SAR)</small><strong class="mobile-price">@product.Price</strong></div> }
+ <div class="mobile-available"><small>@(Model.Inventory ? "Available quantity" : "Available")</small><strong>@product.Stock units</strong>@if(Model.Inventory) { <small>Demo threshold: 5 units</small> }</div>
+ <a class="product-detail-link mobile-detail" asp-action="Product" asp-route-id="@product.Id" aria-label="View details for @product.Name"><span>@(Model.Inventory ? "View Details" : "Details")</span><span class="icon" aria-hidden="true">chevron_right</span></a>
+ </div></article>
+}
+@if(Model.Products.Count==0 && Model.Error is null) { <div class="empty"><h3>No products found</h3><p>Try a different search or clear your filters.</p></div> }
+</div>
