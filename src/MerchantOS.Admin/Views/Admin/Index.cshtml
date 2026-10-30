@@ -1,22 +1,25 @@
 @model DashboardVm
-@{ ViewData["Title"] = "Overview"; }
-<div class="page-heading"><div><p class="eyebrow">STORE AT A GLANCE</p><h1>Operations overview</h1><p>Inventory health and the latest activity from your POS.</p></div><a class="btn btn-emerald" asp-action="Products">Browse products <span aria-hidden="true">↗</span></a></div>
-<div class="scope-banner"><span class="live-dot"></span> Current catalog snapshot <span>Orders and sales cover the latest 100 orders, across all dates.</span></div>
-<div class="metric-grid">
-<div class="metric"><span>Total products</span><strong>@(Model.Catalog.Error is null ? Model.Catalog.TotalProducts.ToString() : "Unavailable")</strong><small>Across all categories</small></div>
-<div class="metric"><span>Available inventory</span><strong>@(Model.Catalog.Error is null ? Model.Catalog.TotalUnits.ToString("N0") : "Unavailable")</strong><small>Units on hand</small></div>
-<div class="metric"><span>Low-stock products</span><strong>@(Model.Catalog.Error is null ? Model.Catalog.LowStock.ToString() : "Unavailable")</strong><small>@(Model.Catalog.Error is null ? $"1–5 units remaining · {Model.Catalog.OutOfStock} out of stock" : "POS service unavailable")</small></div>
-<div class="metric featured"><span>Completed sales</span><strong>@(Model.Orders.Error is null ? Display.Money(Model.SalesHalalas) : "Unavailable")</strong><small>@(Model.Orders.Error is null ? $"{Model.CompletedOrders} completed orders in latest window" : "POS service unavailable")</small></div>
+@{ ViewData["Title"] = "Overview"; var buckets = Model.Rhythm; var max = Math.Max(1, buckets.Select(b => b.Count).DefaultIfEmpty().Max()); }
+<div class="page-heading"><div><h1>Overview</h1><p>Monitor your store operations, sales, and inventory at a glance.</p></div><span class="scope-chip">Latest 100 orders</span></div>
+<div class="metric-grid dashboard-metrics">
+<div class="metric"><div class="metric-top"><span>Revenue in window</span><span class="metric-icon"><span class="icon" aria-hidden="true">payments</span></span></div><strong>@(Model.Orders.Error is null ? Display.Money(Model.SalesHalalas) : "Unavailable")</strong><p>Completed SAR sales · includes VAT</p></div>
+<div class="metric"><div class="metric-top"><span>Orders Completed</span><span class="metric-icon"><span class="icon" aria-hidden="true">check_circle</span></span></div><strong>@(Model.Orders.Error is null ? Model.CompletedOrders.ToString() : "Unavailable")</strong><p>Within the latest 100 orders</p></div>
+<div class="metric"><div class="metric-top"><span>Active Products</span><span class="metric-icon neutral"><span class="icon" aria-hidden="true">inventory_2</span></span></div><strong>@(Model.Catalog.Error is null ? Model.Catalog.TotalProducts.ToString() : "Unavailable")</strong><p>@(Model.Catalog.Error is null ? $"{Model.Catalog.TotalProducts} SKUs in the current catalog" : "POS catalog unavailable")</p></div>
+<div class="metric"><div class="metric-top"><span>Low Stock Products</span><span class="metric-icon danger"><span class="icon" aria-hidden="true">warning</span></span></div><strong class="text-danger">@(Model.Catalog.Error is null ? Model.Catalog.LowStock.ToString() : "Unavailable")</strong><p>@(Model.Catalog.Error is null ? "1–5 units · demo presentation threshold" : "POS inventory unavailable")</p></div>
 </div>
-<div class="overview-grid"><section class="panel"><div class="panel-heading"><div><h2>Recent orders</h2><p>Latest transactions, newest first</p></div><a asp-action="Orders">View orders →</a></div>
+<div class="overview-grid"><div class="overview-primary"><section class="panel rhythm-card"><div class="panel-heading"><div><h2>Sales Rhythm</h2><p>@(buckets.Count > 0 ? $"Hourly completed orders · {buckets[0].Hour:dd MMM yyyy} · UTC" : "Hourly completed orders")</p></div><div class="chart-scope">9-hour window<span>On the latest order date</span></div></div>
+@if(Model.Orders.Error is not null) { <partial name="_ErrorNotice" model="Model.Orders.Error" /> }
+else if(buckets.Count == 0) { <div class="empty chart-empty">No completed orders to chart yet.</div> }
+else { <div class="rhythm-chart" role="img" aria-label="Completed order counts by UTC hour on the latest order date">@foreach(var bucket in buckets) { var level = bucket.Count == 0 ? 0 : Math.Max(1, (int)Math.Ceiling(bucket.Count * 10d / max)); <div class="chart-column" title="@bucket.Hour.ToString("HH:mm") UTC: @bucket.Count completed orders"><span class="bar-count">@bucket.Count</span><div class="chart-bar bar-height-@level @(bucket.Count == max ? "peak" : "")"></div><span class="bar-label">@bucket.Hour.ToString("HH:mm")</span></div> }</div> }
+</section><section class="panel recent-orders"><div class="panel-heading"><div><h2>Recent Orders</h2><p>Latest persisted point-of-sale transactions</p></div><a asp-action="Orders">View all orders <span class="icon" aria-hidden="true">arrow_forward</span></a></div>
 @if(Model.Orders.Error is not null) { <partial name="_ErrorNotice" model="Model.Orders.Error" /> }
 else if(Model.Orders.Orders.Count == 0) { <div class="empty"><h3>No orders yet</h3><p>Completed POS sales will appear here.</p></div> }
-else { <partial name="_OrderTable" model="Model.Orders.Orders.Take(6).ToList()" /> }
-</section><section class="panel"><div class="panel-heading"><div><h2>Stock watch</h2><p>Items needing attention</p></div></div>
+else { <div class="table-responsive"><table class="table admin-table compact-table"><thead><tr><th>Order ID</th><th>Time (UTC)</th><th class="text-end">Total (SAR)</th><th class="text-center">Status</th></tr></thead><tbody>@foreach(var order in Model.Orders.Orders.Take(5)) { <tr><td><a asp-action="Order" asp-route-id="@order.Id">@order.OrderNumber</a></td><td>@order.CreatedAt.ToUniversalTime().ToString("HH:mm")</td><td class="text-end money">@Display.Money(order.PayableHalalas, order.Currency)</td><td class="text-center"><span class="stock-badge success">@order.Status</span></td></tr> }</tbody></table></div> }
+</section></div><section class="panel stock-watch"><div class="panel-heading"><h2><span class="icon" aria-hidden="true">notification_important</span>Low Stock Alerts</h2><a asp-action="Inventory">Manage Stock</a></div>
 @if(Model.Catalog.Error is not null) { <partial name="_ErrorNotice" model="Model.Catalog.Error" /> }
-else { var watch = Model.Catalog.Products.Where(p => p.Stock <= 5).OrderBy(p => p.Stock).Take(6).ToList();
- if(watch.Count == 0) { <div class="empty"><h3>No stock alerts</h3><p>All catalog items have more than five units.</p></div> }
- foreach(var product in watch) { <a class="stock-item" asp-action="Product" asp-route-id="@product.Id"><div><strong>@product.Name</strong><small>@product.Sku</small></div><span class="stock-badge @product.StatusClass">@product.Stock left</span></a> }
+else { var watch = Model.Catalog.AllProducts.Where(p => p.Stock <= 5).OrderBy(p => p.Stock).ThenBy(p=>p.Name).Take(4).ToList();
+ if(watch.Count == 0) { <div class="empty"><h3>No stock alerts</h3><p>All catalog products have more than five units.</p></div> }
+ foreach(var product in watch) { <a class="stock-item" asp-action="Product" asp-route-id="@product.Id"><div><strong>@product.Name</strong><small>Demo threshold: 5 units</small></div><span class="stock-badge @(product.Stock==0 ? "danger" : "warning")">@product.Stock left</span></a> }
 }
-<div class="panel-bottom"><a asp-action="Inventory">Review inventory →</a></div></section></div>
-<section class="integration-note"><h2>One source of truth</h2><p>Catalog, stock and order records come from MerchantOS POS. Sales totals include VAT and discounts as recorded by the POS; only SAR completed orders contribute to the displayed total. No administrative writes are enabled.</p></section>
+<div class="panel-bottom"><a asp-action="Inventory" asp-route-stock="attention">View in Inventory <span class="icon" aria-hidden="true">chevron_right</span></a></div></section></div>
+<p class="data-scope">Orders and sales cover the latest 100 orders, across all dates. The chart shows a 9-hour interval on the latest order date. Inventory uses the current catalog.</p>

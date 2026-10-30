@@ -67,10 +67,10 @@ jobs:
           dotnet run --project src/MerchantOS.Admin/MerchantOS.Admin.csproj -c Release --no-build > admin.log 2>&1 &
           for i in {1..40}; do curl -fsS http://127.0.0.1:5090/ >/dev/null && break; sleep 2; done
           python3 scripts/verify-live.py
-      - name: Responsive browser verification
+      - name: Desktop Stitch browser verification (1440 x 900)
         run: |
           npx playwright install --with-deps chromium
-          npm run test:e2e
+          npm run test:e2e -- --project=desktop
       - name: Upload screenshots, reports and logs
         if: always()
         uses: actions/upload-artifact@v4

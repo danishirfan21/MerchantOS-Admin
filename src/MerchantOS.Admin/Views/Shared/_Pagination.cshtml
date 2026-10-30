@@ -1,0 +1,4 @@
+@model PagerVm
+<div class="pagination-bar" id="result-pagination"><span>Showing <strong>@Model.Start–@Model.End</strong> of <strong>@Model.Total</strong> @(Model.Action == "Orders" ? "orders" : "products")</span><nav aria-label="Results pages"><ul class="pagination mb-0">
+@foreach(var link in Model.Links) { <li class="page-item @(link.Disabled ? "disabled" : "") @(link.Current ? "active" : "")">@if(link.Disabled) { <span class="page-link" aria-disabled="true">@link.Label</span> } else { <a class="page-link" href="@link.Url" aria-current="@(link.Current ? "page" : null)">@link.Label</a> }</li> }
+</ul></nav></div>

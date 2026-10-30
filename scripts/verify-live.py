@@ -8,7 +8,12 @@ products=data('/api/products'); assert len(products)==30
 for product in products:
  assert data('/api/inventory/'+product['id'])['stock']==product['stock']
  assert data('/api/products/'+product['id'])['sku']==product['sku']
-rows=json.loads(read(ADMIN+'/Admin/ProductRows')); assert len(rows)==len(products)
+rows=[]
+for page in range(1,6):
+ result=json.loads(read(ADMIN+'/Admin/ProductRows?page='+str(page)))
+ rows.extend(result['products'])
+assert len(rows)==len(products)
+assert len({row['id'] for row in rows})==len(products)
 assert sum(row['stock'] for row in rows)==sum(product['stock'] for product in products)
 orders=data('/api/orders'); assert orders, 'Fixture must contain a real completed checkout'
 for order in orders:

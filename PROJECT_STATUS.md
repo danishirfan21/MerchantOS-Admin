@@ -1,16 +1,34 @@
 # MerchantOS Admin — project status
 
-## Milestone 1: verified, pull request open
+## Desktop UI iteration 1 — implemented, live CI verification pending
 
 Updated 30 October 2026 (Asia/Karachi).
 
 Repository: https://github.com/danishirfan21/MerchantOS-Admin
-Feature branch: `feature/milestone-1-verification`
+Feature branch: `feature/stitch-desktop`
 Pull request: https://github.com/danishirfan21/MerchantOS-Admin/pull/1
 Verified integration run: https://github.com/danishirfan21/MerchantOS-Admin/actions/runs/40957510020
 Artifacts: https://github.com/danishirfan21/MerchantOS-Admin/actions/runs/40957510020/artifacts/12933623920
 
 The user uploaded the previously verified source as the initial main commit `e1add784b7f7540a02417efb58ceeeb1ae26bbef`. This feature PR preserves that upload and finalizes the CI runner, real integration evidence, screenshots and documentation. The original local implementation branch was `feature/milestone-1`.
+
+## Desktop iteration changes
+
+Five supplied Stitch desktop screens implemented at 1440 × 900: Overview, Products, Inventory, Orders and Order Details. Shared Razor shell/partials use the dark sidebar, compact header, Inter typography, white surfaces, badges, thumbnails and spacing from the references.
+
+Added seven-row product/inventory/order pagination, numeric catalog sorting, read-only Bootstrap product drawer, jQuery filtering, escaped Handlebars rows/pagination, UTC order-date/payment filters, an hourly completed-order chart and a working print-friendly receipt. All retail records and financial values still originate in POS. No backend writes, alternate database or public deployment was added.
+
+Local verification executed: 33 .NET tests passed, 3 template checks passed and 15 desktop browser checks passed against the explicit contract fixture. Local screenshots of all five pages were compared with the supplied Stitch HTML and corrected. A print PDF was rendered and inspected. These preliminary browser results do not claim real PostgreSQL integration for this iteration.
+
+The branch descends from verified foundation PR #1, which remains unmerged. A separate desktop PR targets main and includes that pending foundation verification ancestry. Neither PR is merged automatically.
+
+## Pending desktop completion gates
+
+- Run all checks against the pinned real POS API and PostgreSQL 17 in GitHub Actions.
+- Publish real 1440 × 900 page captures and receipt PDF in Actions artifacts.
+- Record the passing run, exact test results, desktop PR URL and final visual review here.
+
+## Preserved foundation verification
 
 ## Implemented functionality
 
