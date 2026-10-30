@@ -14,7 +14,14 @@ All five supplied tablet sources inspected and rendered at 768 × 1024. Reuses e
 - Local .NET tests: 33 passed, zero failed/skipped.
 - Local template checks: 3 passed, zero failed.
 - Local tablet presentation checks: 10 passed, zero failed, using the explicitly documented contract fixture only. These do not verify the real API/database.
-- Full real POS/PostgreSQL, 15 desktop and 19 tablet browser checks: pending this branch's CI. Results and artifact links will be recorded after execution.
+- Full real POS/PostgreSQL integration: passed; 30 catalog/detail/inventory records, 10 persisted receipts and four main routes. PostgreSQL 17 initialization/migrations and upstream checkout/concurrency checks passed.
+- Desktop Chromium: 15 passed at 1440 × 900, zero failures/retries.
+- Tablet Chromium: 19 passed at 768 × 1024, zero failures/retries.
+- [Passing implementation run 41113661480](https://github.com/danishirfan21/MerchantOS-Admin/actions/runs/41113661480), snapshot `56f8c1911a861dc14e460f1d53e0a081c4310a64`.
+- [Actual desktop/tablet screenshots, full tablet pages, drawer capture, both print PDFs, browser report, TRX and logs](https://github.com/danishirfan21/MerchantOS-Admin/actions/runs/41113661480/artifacts/13005990377).
+- All five desktop pages were pixel-identical to pristine main under identical local fixture data. This is presentation evidence only; the CI above uses the real database.
+
+The final refinement commit tightens tablet-only catalog card spacing/type and amber low-stock color and records this evidence. Current-head CI and final artifact links are linked in [tablet PR #3](https://github.com/danishirfan21/MerchantOS-Admin/pull/3), which remains unmerged.
 
 The browser suite retains every desktop assertion and adds touch/drawer focus and close checks, two-column/stacking assertions, compact table checks, order search/date/pagination, control touch targets, table overflow, and one final receipt print action. Retries remain zero.
 
