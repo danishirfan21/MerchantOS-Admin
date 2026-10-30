@@ -1,75 +1,62 @@
-# MerchantOS Admin — project status
-
-## Desktop UI iteration 1 — implemented, live CI verification pending
+# MerchantOS Admin — desktop iteration 1
 
 Updated 30 October 2026 (Asia/Karachi).
 
-Repository: https://github.com/danishirfan21/MerchantOS-Admin
-Feature branch: `feature/stitch-desktop`
-Pull request: https://github.com/danishirfan21/MerchantOS-Admin/pull/1
-Verified integration run: https://github.com/danishirfan21/MerchantOS-Admin/actions/runs/40957510020
-Artifacts: https://github.com/danishirfan21/MerchantOS-Admin/actions/runs/40957510020/artifacts/12933623920
+**Implemented and verified at 1440 × 900.**
 
-The user uploaded the previously verified source as the initial main commit `e1add784b7f7540a02417efb58ceeeb1ae26bbef`. This feature PR preserves that upload and finalizes the CI runner, real integration evidence, screenshots and documentation. The original local implementation branch was `feature/milestone-1`.
+- Repository: https://github.com/danishirfan21/MerchantOS-Admin
+- Feature branch: `feature/stitch-desktop`
+- Desktop PR: https://github.com/danishirfan21/MerchantOS-Admin/pull/2
+- Passing real integration run: https://github.com/danishirfan21/MerchantOS-Admin/actions/runs/41084505556
+- Five desktop screenshots, receipt PDF, HTML/TRX reports and logs: https://github.com/danishirfan21/MerchantOS-Admin/actions/runs/41084505556/artifacts/12991545523
 
-## Desktop iteration changes
+## Implemented desktop screens
 
-Five supplied Stitch desktop screens implemented at 1440 × 900: Overview, Products, Inventory, Orders and Order Details. Shared Razor shell/partials use the dark sidebar, compact header, Inter typography, white surfaces, badges, thumbnails and spacing from the references.
+| Screen | Working behavior |
+| --- | --- |
+| Overview | Four real KPI cards, latest-activity hourly chart, recent orders, low/depleted stock alerts |
+| Products | Actual catalog, category/stock/search filters, integer-price sorting, seven-row pagination, read-only product drawer |
+| Inventory | Stock summaries, attention banner, demo threshold, search/filters/pagination and product details |
+| Orders | Actual latest-100-order window, order search, UTC date/payment filters, pagination, receipt navigation |
+| Order Details | Persisted item/price/quantity and financial values, cash/simulated-card display, cash change, working print receipt |
 
-Added seven-row product/inventory/order pagination, numeric catalog sorting, read-only Bootstrap product drawer, jQuery filtering, escaped Handlebars rows/pagination, UTC order-date/payment filters, an hourly completed-order chart and a working print-friendly receipt. All retail records and financial values still originate in POS. No backend writes, alternate database or public deployment was added.
-
-Local verification executed: 33 .NET tests passed, 3 template checks passed and 15 desktop browser checks passed against the explicit contract fixture. Local screenshots of all five pages were compared with the supplied Stitch HTML and corrected. A print PDF was rendered and inspected. These preliminary browser results do not claim real PostgreSQL integration for this iteration.
-
-The branch descends from verified foundation PR #1, which remains unmerged. A separate desktop PR targets main and includes that pending foundation verification ancestry. Neither PR is merged automatically.
-
-## Pending desktop completion gates
-
-- Run all checks against the pinned real POS API and PostgreSQL 17 in GitHub Actions.
-- Publish real 1440 × 900 page captures and receipt PDF in Actions artifacts.
-- Record the passing run, exact test results, desktop PR URL and final visual review here.
-
-## Preserved foundation verification
-
-## Implemented functionality
-
-- .NET 10 / ASP.NET Core MVC, typed controllers, Razor Views, ViewModels, DI and asynchronous HttpClient integration.
-- Overview dashboard, searchable/filterable product catalog, product details, inventory overview, recent order history and persisted receipt details.
-- Bootstrap responsive sidebar/offcanvas navigation, forms, tables and restrained emerald/slate styling.
-- Genuine jQuery AJAX catalog filtering and precompiled, HTML-escaped Handlebars rows, plus standard Razor GET-form fallback.
-- Loading, empty, error/retry states; independently handled catalog/order failures; honest latest-100-order sales window.
-- Existing POS REST API is the only data source. No duplicate catalog/database, direct SQL, checkout logic, administrative writes or public deployment.
+Shared Razor layout/partials implement the supplied dark slate sidebar, compact header, typography, surfaces, cards, tables, badges and thumbnails. Bootstrap supplies offcanvas/components; jQuery and precompiled escaped Handlebars implement progressive search, paging and details. The three browsing screens have a working header product search and Ctrl+K focus shortcut. Local fonts/assets preserve the restrictive CSP without runtime CDN calls.
 
 ## Executed verification
 
-Passing run at implementation/runner commit `f0d0b42ddc01b624c3d56f27af57c3d56c3b5050`:
+Passing desktop implementation run at `7fbdfb6ab9b359cd511a348deb252f32f969b0ea`:
 
-| Check | Result | Actual scope |
-| --- | --- | --- |
-| .NET restore and Release builds | Passed, 0 warnings / 0 errors | MVC, test project and pinned POS API |
-| .NET tests | 26 passed / 0 failed / 0 skipped | Controllers, mappings, filtering, aggregation, API errors, empty data, Razor rendering and output encoding |
-| Template checks | 3 passed / 0 failed | Dynamic HTML escaping, empty state and compiled runtime |
-| PostgreSQL initialization | Passed | PostgreSQL 17, 30 seeded products/inventory records and checkout migration |
-| Live POS catalog checks | Passed | Health, catalog, categories, search/filter, product/inventory detail and 404s |
-| Live POS checkout checks | Passed | Cash/card, failures, idempotency, historical snapshots, inventory, receipts and concurrency |
-| Admin live integration | Passed | 30 product/detail/inventory records, 5 real persisted order receipts, 4 main Razor pages |
-| Playwright Chromium | 15 passed / 0 failed, zero retries | Desktop, tablet and mobile against the real POS API/PostgreSQL; includes filters, details, responsive navigation and no-JavaScript forms |
-| Artifact upload | Passed | Screenshots, Playwright HTML report, xUnit TRX and service logs |
-| Local npm audit | Passed, 0 vulnerabilities | Locked dependencies, including patched Handlebars 4.7.10 |
+| Check | Executed result |
+| --- | --- |
+| MVC, test project and POS Release builds | Passed; 0 warnings / 0 errors |
+| .NET tests | 33 passed, 0 failed, 0 skipped |
+| Safe template tests | 3 passed, 0 failed |
+| Desktop Playwright | 15 passed, 0 failed, zero retries; 1440 × 900 |
+| PostgreSQL 17 schema, 30-product seed and checkout migration | Passed |
+| Pinned POS catalog/checkout checks | Passed; cash/card, failures, idempotency, snapshots, inventory, receipts and concurrency |
+| Admin live integration | Passed; all 30 catalog/detail/inventory records across pagination, 5 real receipts and 4 main page routes |
+| Browser artifact upload | Passed; five page screenshots, print PDF, browser report, TRX and service logs |
 
-Real CI screenshots replace the earlier contract-fixture README captures. Desktop overview and mobile inventory captures were visually inspected. Local contract-fixture browser results were only preliminary checks; they are not the basis of the database-backed verification above.
+The suite covers all five pages, sidebar/global search, category/search/stock filters, sorting, pagination, read-only drawer, order navigation/payment filtering, backend total display, print behavior, loading/error state and no-JavaScript fallback. Additional assertions preserve the Inventory URL after AJAX pagination. No database-backed claim is based on the preliminary local contract fixture.
 
-## CI correction
+## Visual verification
 
-The initial workflow reached live integration successfully but could not install the pinned Playwright browser on Ubuntu 26.04 after `ubuntu-latest` advanced. The workflow now pins `ubuntu-24.04`, and the complete integration/browser run succeeds. No POS source changes were needed.
+All five supplied Stitch HTML references and actual MVC pages were rendered in Chromium at 1440 × 900 and visually compared. Corrections tightened summary card heights, screen-specific margins, filter/table separation, low-stock rows, receipt header and financial summary. All five real CI captures were also compared with the references. Measurements: sidebar 256px, header 64px, primary headings 24px; no unexpected document-level horizontal overflow on any desktop page. The print PDF was rendered and inspected.
 
-## Known limitations
+See [desktop visual review](docs/desktop-visual-review.md) for intentional data/capability differences. The screenshots are actual Razor pages backed by the pinned POS API and PostgreSQL, not mockups or Stitch demo records. This is a faithful visual translation with live-data adaptations, not a pixel-identical claim.
 
-- The POS order endpoint exposes only its latest 100 orders. Completed-order counts, sales sums and order search apply to that window, with all dates. No lifetime totals or date-range reporting are implied.
-- Inventory is a current catalog snapshot, not one transactional snapshot shared across independent API calls. Low stock is a presentation threshold of 1–5 units; zero is a separate status.
-- The UI is English; Arabic product names are retained and searchable.
-- Both applications are local/isolated demos. The upstream API is unauthenticated. No admin authentication, authorization, writes, store settings or real card processing are implemented.
-- The feature PR remains unmerged. The POS repository remains unchanged; neither application was deployed publicly.
+## Boundaries and known limits
 
-## Recommended next milestone
+- Desktop is the only acceptance target in this iteration. No approved tablet/mobile UI has been implemented or newly claimed as visually verified. Existing narrow-screen fallback code remains.
+- The POS API is unauthenticated: keep both apps local or inside isolated CI. No public deployment or insecure demonstration login.
+- No writes, price overrides, product editing, stock adjustments, refunds, customer profiles, email receipts, real card data, multi-store records or new database were added.
+- Order browsing/date/payment filters and sales metrics cover only the latest 100 API records. Dates are explicitly UTC. Item counts absent from the order-list contract are shown as receipt links; there is no N+1 receipt fetch.
+- Sales chart: nine hourly buckets on the latest completed order date. It does not pretend to be complete lifetime or today-only reporting.
+- Reorder threshold is an Admin presentation rule of 5 for every product; it is not persisted/backend configurable. Low stock is 1–5, depleted is 0, healthy is 6+.
+- Thumbnails use the provided illustrative Stitch assets only for matching products; remaining products use POS category SVGs. They are not API-provided product photography.
 
-Milestone 2: design coordinated authenticated/authorized backend contracts for product editing and inventory adjustments, with validation and audit records. Obtain explicit authorization for any future POS changes; do not bypass checkout/inventory safeguards.
+## Repository state and next iteration
+
+The user-uploaded main commit remains intact. This branch descends from verified foundation PR #1 (also unmerged) and targets main as requested. The prior foundation's complete run is https://github.com/danishirfan21/MerchantOS-Admin/actions/runs/40958190772. Neither PR is merged automatically. MerchantOS POS source remains unchanged.
+
+Next: supply the approved tablet screens for a separate implementation iteration, followed by the mobile designs. Administrative authentication and safe write contracts remain future milestone work requiring explicit scope.

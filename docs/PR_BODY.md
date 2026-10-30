@@ -1,18 +1,20 @@
-## Verify the read-only MVC admin foundation
+## Implement the five approved Stitch desktop screens
 
-The initial user upload already contains the .NET 10 MVC/Razor application. This PR pins CI to Playwright-supported Ubuntu 24.04, replaces contract-fixture README screenshots with real database-backed captures, and records the verified implementation and remaining limitations. Main is preserved and MerchantOS POS is unchanged.
+Translates the supplied Overview, Products, Inventory, Orders and Order Details screens into a shared Razor/Bootstrap desktop UI at 1440 × 900. Preserves the verified POS REST integration and read-only boundaries.
 
-The application provides overview, catalog/product details, inventory and order/receipt pages through typed server-side POS API integration. Bootstrap supplies responsive navigation/forms/tables; jQuery and escaped precompiled Handlebars enhance catalog filtering while Razor GET forms remain usable without JavaScript. There is no second database, checkout implementation or admin write surface.
+Adds real-data KPI/hourly chart display, seven-row pagination, numeric catalog sorting, jQuery/Handlebars filtering and paging, a read-only Bootstrap product drawer, working header product search, UTC order filters, and print-friendly receipts. Fonts, icons and supplied illustrative thumbnails are local assets; no runtime Tailwind/CDN dependency.
 
 ### Validation
 
-[Successful integration run](https://github.com/danishirfan21/MerchantOS-Admin/actions/runs/40957510020) · [Screenshots, HTML/TRX reports and logs](https://github.com/danishirfan21/MerchantOS-Admin/actions/runs/40957510020/artifacts/12933623920)
+[Passing real integration run](https://github.com/danishirfan21/MerchantOS-Admin/actions/runs/41084505556) · [Five page screenshots, print PDF, reports and logs](https://github.com/danishirfan21/MerchantOS-Admin/actions/runs/41084505556/artifacts/12991545523)
 
-- .NET Release builds: zero warnings/errors.
-- 26 .NET tests, 3 template checks, 15 desktop/tablet/mobile Playwright tests pass with zero retries.
-- Real pinned POS API + PostgreSQL 17: seed/migration, health/catalog contracts, checkout/idempotency/concurrency, 30 product/inventory records, 5 persisted receipts and four main Razor pages verified.
-- Local dependency audit: zero vulnerabilities.
+- Release builds: 0 warnings/errors.
+- 33 .NET tests, 3 template checks and 15 desktop Playwright checks pass with zero retries.
+- Actual pinned POS API + PostgreSQL 17: seed/migration, catalog/checkout/idempotency/concurrency, all 30 inventory/product records, five receipts and four main page routes verified.
+- All five actual desktop pages compared against the supplied Stitch HTML; layout corrections applied. No unexpected horizontal overflow. Print PDF rendered and inspected.
 
-### Boundaries
+### Intentional boundaries
 
-Local/isolated demo only. Authentication/authorization and safe backend contracts must precede future writes or public use. Sales metrics and order search cover the latest 100 orders, not lifetime reporting. No public deployment. Leave this PR unmerged.
+No tablet/mobile redesign, admin writes, POS changes, alternate database or public deployment. Static example metrics/customer/payment/multi-store data are not presented as live. Window/date/threshold limitations remain visible. See desktop visual-review documentation for the deliberate adaptations.
+
+This branch includes the verified foundation ancestry from unmerged PR #1 and targets main as requested. Leave both PRs unmerged. Next UI iteration is the separately supplied tablet design.

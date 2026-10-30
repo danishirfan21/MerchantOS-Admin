@@ -25,6 +25,12 @@ test('sidebar navigation preserves active state', async ({page},testInfo) => {
  await page.locator('#sidebar').getByRole('link',{name:'Inventory',exact:true}).click();
  await expect(page.getByRole('heading',{level:1,name:'Inventory'})).toBeVisible();
  await expect(page.locator('#sidebar a[aria-current=page]')).toHaveText('Inventory');
+ if(testInfo.project.name==='desktop') {
+  await page.getByLabel('Global product search').fill('Sony');
+  await page.getByLabel('Global product search').press('Enter');
+  await expect(page.getByRole('heading',{level:1,name:'Products'})).toBeVisible();
+  await expect(page.locator('#product-rows strong').first()).toContainText('Sony');
+ }
 });
 test('catalog search, categories and empty states', async ({page}) => {
  await page.goto('/Admin/Products');
@@ -69,6 +75,11 @@ test('inventory attention filter uses authoritative stock', async ({page}) => {
  const quantities=await page.locator('#product-rows td:nth-child(4)').allTextContents();
  expect(quantities.length).toBeGreaterThan(0); expect(quantities.every(v=>Number(v)<=5)).toBeTruthy();
  await expect(page.getByLabel('Availability')).toHaveValue('attention');
+ await page.getByLabel('Availability').selectOption('low');
+ await expect(page.getByRole('status')).toContainText('products found');
+ await expect(page.locator('#result-pagination a').first()).toHaveAttribute('href',/\/Admin\/Inventory/);
+ await page.getByRole('link',{name:'Next',exact:true}).click();
+ await expect(page).toHaveURL(/\/Admin\/Inventory.*page=2/);
 });
 test('orders browse persisted receipts and filter payment', async ({page}) => {
  await page.goto('/Admin/Orders');

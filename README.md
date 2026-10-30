@@ -116,7 +116,7 @@ This fixture is test-only and is never started by the application or live CI wor
 
 ## Desktop screenshots
 
-Actual Razor page captures against the real pinned POS backend and PostgreSQL 17 are published after CI verification. This iteration's results and artifact URL are recorded in [PROJECT_STATUS.md](PROJECT_STATUS.md).
+Actual Razor page captures from the [passing desktop CI run](https://github.com/danishirfan21/MerchantOS-Admin/actions/runs/41084505556), backed by the pinned POS API and PostgreSQL 17. [Download all screenshots, the receipt PDF and test reports](https://github.com/danishirfan21/MerchantOS-Admin/actions/runs/41084505556/artifacts/12991545523). Exact results: **33 .NET tests, 3 template checks and 15 desktop browser tests pass**. See [PROJECT_STATUS.md](PROJECT_STATUS.md).
 
 | Overview | Products | Inventory | Orders | Order details |
 | --- | --- | --- | --- | --- |
