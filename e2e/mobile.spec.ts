@@ -68,6 +68,7 @@ test('mobile inventory attention, category and search use the actual stock',asyn
  await expect(page.locator('.mobile-inventory-card')).toHaveCount(7);
  await page.getByRole('link',{name:'Filter Low / Depleted'}).tap();
  await expect(page).toHaveURL(/stock=attention/);
+ await page.waitForLoadState('load');
  expect((await page.locator('.mobile-inventory-card .mobile-available strong').allTextContents()).every(t=>Number(t.replace(/\D/g,''))<=5)).toBeTruthy();
  await page.getByLabel('Category',{exact:true}).selectOption('Audio');
  await expect(page.getByRole('status')).toContainText('products found');
