@@ -81,8 +81,8 @@ public sealed class PosClientTests {
     [Fact] public async Task MalformedJsonIsWrapped() => await Assert.ThrowsAsync<PosUnavailableException>(()=>Client(_=>new(HttpStatusCode.OK) {Content=new StringContent("invalid")}).Orders(default));
 }
 public sealed class RenderingTests {
-    [Theory] [InlineData("/","Operations overview")] [InlineData("/Admin/Products","Product catalog")]
-    [InlineData("/Admin/Inventory","Inventory overview")] [InlineData("/Admin/Orders","Order history")]
+    [Theory] [InlineData("/","Overview")] [InlineData("/Admin/Products","Products")]
+    [InlineData("/Admin/Inventory","Inventory")] [InlineData("/Admin/Orders","Orders")]
     public async Task RazorRenders(string path,string heading) {
         using var app=new WebApplicationFactory<Program>().WithWebHostBuilder(builder=>builder.ConfigureServices(services=> {
             services.RemoveAll<IPosClient>(); services.AddSingleton<IPosClient>(new FakePos());

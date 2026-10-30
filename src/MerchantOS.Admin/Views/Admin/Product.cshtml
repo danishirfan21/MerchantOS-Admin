@@ -1,4 +1,3 @@
 @model ProductDto
-@{ ViewData["Title"] = "Product details"; }
-<a class="back-link" asp-action="Products">← Product catalog</a><div class="page-heading"><div><p class="eyebrow">PRODUCT RECORD</p><h1>@Model.Name</h1><p>@Model.NameAr</p></div><span class="read-only">Read only</span></div>
-<section class="panel detail-panel"><h2>Product details</h2><dl class="detail-grid"><div><dt>SKU</dt><dd>@Model.Sku</dd></div><div><dt>Category</dt><dd>@Model.Category</dd></div><div><dt>Unit price</dt><dd>@Display.Money(Model.PriceHalalas)</dd></div><div><dt>Available stock</dt><dd>@Model.Stock units</dd></div><div><dt>Stock status</dt><dd>@Display.StockStatus(Model.Stock)</dd></div><div><dt>Product ID</dt><dd>@Model.Id</dd></div></dl><p class="text-secondary">Current catalog price. Historical receipt prices are retained by the POS.</p></section>
+@{ ViewData["Title"] = "Products"; }
+<a class="back-link" asp-action="Products"><span class="icon" aria-hidden="true">arrow_back</span>Back to Products</a><div class="page-heading"><div><h1>@Model.Name</h1><p>Current product record · read only</p></div></div><section class="panel standalone-product"><partial name="_ProductDetails" model="Model" /></section>

@@ -2,7 +2,20 @@
 
 A server-rendered retail operations workspace built with ASP.NET Core MVC 10 and Razor. MerchantOS Admin complements [MerchantOS POS](https://github.com/danishirfan21/MerchantOS-POS) with read-only catalog, stock and order oversight. It does not implement checkout or maintain a second inventory database.
 
-> Local demo only. The upstream POS API is unauthenticated. Neither application may be exposed publicly. Milestone 1 is awaiting repository creation and database-backed CI verification; see [PROJECT_STATUS.md](PROJECT_STATUS.md).
+> Local demo only. The upstream POS API is unauthenticated. Neither application may be exposed publicly. Milestone 1 is verified against the real POS API and PostgreSQL 17; see [PROJECT_STATUS.md](PROJECT_STATUS.md).
+
+## Desktop UI — Stitch iteration 1
+
+The five approved Google Stitch desktop screens are translated into reusable Razor Views, Bootstrap components and custom CSS. The acceptance viewport is **1440 × 900**. This iteration does not implement the future tablet/mobile designs; the existing narrow-screen fallback is retained without a new visual-parity claim.
+
+- Dark slate 256px sidebar, fixed 64px header, local Inter typography and Material Symbols, restrained emerald/neutral surfaces.
+- Overview: four real KPI cards, a completed-order hourly chart, recent receipts and stock alerts.
+- Products: summary cards, category/stock/search filters, numeric sorting, seven-row pagination and a read-only Bootstrap product drawer.
+- Inventory: stock summaries, an attention banner, filters, seven-row pagination and the same read-only detail interaction.
+- Orders: order-number, UTC date and cash/simulated-card filters with pagination inside the latest-100-order API window.
+- Order details: persisted purchased items, halala-based line display, backend subtotal/discount/VAT/total values and a functioning print-friendly receipt.
+
+See [visual review and deliberate adaptations](docs/desktop-visual-review.md) and [asset provenance](docs/design-assets.md).
 
 ## Pages
 
@@ -22,7 +35,7 @@ A server-rendered retail operations workspace built with ASP.NET Core MVC 10 and
 - C#/.NET 10, MVC controllers, Razor layouts, strongly typed DTOs and ViewModels.
 - Bootstrap 5 supplies forms, tables and a responsive offcanvas navigation drawer.
 - jQuery enhances catalog filters with debounced AJAX and stale-request cancellation.
-- Precompiled Handlebars templates update rows with escaped values. The runtime works under `script-src 'self'` without `unsafe-eval`.
+- Precompiled Handlebars templates update paginated rows and navigation with escaped values. The runtime works under `script-src 'self'` without `unsafe-eval`.
 - Razor GET forms remain functional without JavaScript. Details use ordinary server-rendered pages.
 - All vendor assets are copied locally from locked npm dependencies. No CDN is needed.
 - Typed asynchronous `HttpClient` has an eight-second timeout, cancellation propagation, safe error messages and detail 404 handling.
@@ -61,6 +74,12 @@ dotnet run --project src/MerchantOS.Admin/MerchantOS.Admin.csproj
 
 Open `http://127.0.0.1:5090`. POS API uses `127.0.0.1:5080`, PostgreSQL uses `127.0.0.1:5433`; optional Angular POS remains on port 4200. Compose applies the upstream schema/seed/migration. Run its initial schema only on a fresh local database; never reset a populated store.
 
+### Browsing and reporting scope
+
+Catalog/inventory filters and numeric sorting run on the full returned product list before seven-row pagination. Summary cards cover the entire catalog, independently of table filters. Order search, date filters (explicitly UTC), and payment filters run before pagination over only the latest 100 orders. The order-list contract omits item counts; the UI links to the receipt instead of inventing a count or issuing an N+1 set of receipt requests.
+
+The dashboard's chart shows nine consecutive UTC hourly buckets on the latest completed order date; its caption makes that date explicit. It is not a fabricated today-only report. Sales KPIs still cover all completed SAR orders in the fetched window, independently of pagination. Low/depleted stock uses a documented **global presentation threshold of 5 units**, not backend-configured product thresholds.
+
 ### Configuration
 
 `PosApi:BaseUrl` defaults to `http://127.0.0.1:5080/`. Override it with `PosApi__BaseUrl` or environment-specific .NET configuration; it must resolve to a loopback URI for this milestone. Keep a trailing slash. `ASPNETCORE_URLS` can override the Admin listen address; use a loopback address such as `http://127.0.0.1:5090`.
@@ -79,12 +98,12 @@ dotnet test tests/MerchantOS.Admin.Tests/MerchantOS.Admin.Tests.csproj -c Releas
 npx playwright install chromium
 # With POS and Admin running, and at least one completed POS sale:
 python3 scripts/verify-live.py
-npm run test:e2e
+npm run test:e2e -- --project=desktop
 ```
 
 The live verification script is read-only. On a fresh isolated CI database, the pinned POS checkout verification creates transactional sales before Admin's integration checks. Do not run the upstream checkout verifier on a valuable development database: it deliberately changes stock and creates test orders.
 
-CI in `.github/workflows/verify.yml` restores/builds/tests .NET, checks safe templates, provisions PostgreSQL 17, checks out the pinned POS fixture, verifies its live endpoints and checkout, starts MVC, compares real API and Admin catalog/inventory/receipt results, and runs 15 Chromium checks across desktop, tablet and mobile with zero retries. Screenshots, HTML report, TRX report and service logs are uploaded even on failure. Pull-request workflows have read-only repository permissions.
+CI in `.github/workflows/verify.yml` restores/builds/tests .NET, checks safe templates, provisions PostgreSQL 17, checks out the pinned POS fixture, verifies its live endpoints and checkout, starts MVC, compares real API and Admin catalog/inventory/receipt results, and runs 15 desktop Chromium checks at 1440 × 900 with zero retries. The browser artifact includes five page captures and a print-receipt PDF. Screenshots, HTML report, TRX report and service logs are uploaded even on failure. Pull-request workflows have read-only repository permissions.
 
 For explicitly isolated **contract-only** browser testing when PostgreSQL is unavailable:
 
@@ -95,13 +114,13 @@ python3 tests/fixture-server.py ../MerchantOS-POS/db/init/002_seed.sql
 
 This fixture is test-only and is never started by the application or live CI workflow. Its catalog comes from the pinned POS seed; its single receipt is synthetic. Passing against it does not verify the actual POS backend or PostgreSQL.
 
-## Screenshots
+## Desktop screenshots
 
-Current captures are from local contract-fixture browser verification, **not a database-backed integration run**. Replace them with real CI captures after a successful integration run.
+Actual Razor page captures from the [passing desktop CI run](https://github.com/danishirfan21/MerchantOS-Admin/actions/runs/41084505556), backed by the pinned POS API and PostgreSQL 17. [Download all screenshots, the receipt PDF and test reports](https://github.com/danishirfan21/MerchantOS-Admin/actions/runs/41084505556/artifacts/12991545523). Exact results: **33 .NET tests, 3 template checks and 15 desktop browser tests pass**. See [PROJECT_STATUS.md](PROJECT_STATUS.md).
 
-| Desktop | Tablet | Mobile |
-| --- | --- | --- |
-| [Overview](docs/screenshots/desktop-overview-contract-fixture.png) | [Overview](docs/screenshots/tablet-overview-contract-fixture.png) | [Overview](docs/screenshots/mobile-overview-contract-fixture.png) |
+| Overview | Products | Inventory | Orders | Order details |
+| --- | --- | --- | --- | --- |
+| [View](docs/screenshots/desktop/overview.png) | [View](docs/screenshots/desktop/products.png) | [View](docs/screenshots/desktop/inventory.png) | [View](docs/screenshots/desktop/orders.png) | [View](docs/screenshots/desktop/order-details.png) |
 
 ## Security limitations
 
@@ -111,7 +130,7 @@ MVC output encoding, bounded filter input validation, safe Handlebars escaping, 
 
 ## Roadmap
 
-1. **Milestone 1:** read-only MVC foundation; complete real CI verification and open the feature PR.
+1. **Milestone 1:** read-only MVC foundation verified; [PR #1](https://github.com/danishirfan21/MerchantOS-Admin/pull/1) remains open for review.
 2. **Milestone 2:** authenticated and authorized product/inventory contracts, validation and audit trails, coordinated explicitly with POS.
 3. **Milestone 3:** persisted operational reporting with honest pagination/date-range contracts.
 4. **Milestone 4:** accessibility, UX polish, screenshots and portfolio finalization.
