@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           repository: danishirfan21/MerchantOS-POS
-          ref: 23e5d858a1feb1bb835580e344a61df7ec7e7dfe
+          ref: 888d0985e50c227cbf5cd5788a5fb406480d99f5
           path: reference-pos
       - name: Build and exercise fresh disposable HTTPS topology
         run: python3 reference-pos/deploy/verify_staging.py --directory "$RUNNER_TEMP/merchantos-staging" --admin-context .

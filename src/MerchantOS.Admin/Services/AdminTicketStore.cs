@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Memory;
 using Npgsql;
 namespace MerchantOS.Admin.Services;
+// The per-reference protection purpose prevents ciphertext substitution between database rows.
 // Native ASP.NET ticket serialization protected by the application's persistent DP key ring.
 // Development-only memory fallback keeps isolated rendering tests independent of a database.
 public sealed class AdminTicketStore:ITicketStore,IDisposable {
@@ -22,13 +23,13 @@ public sealed class AdminTicketStore:ITicketStore,IDisposable {
   if(expires>DateTimeOffset.UtcNow.AddMinutes(30))throw new InvalidOperationException("Ticket lifetime exceeds policy.");
   if(db is null){cache.Set(key,ticket,expires);return key;}
   await using var cmd=db.CreateCommand("INSERT INTO admin_ticket_sessions(id_hash,user_id,protected_ticket,expires_at) VALUES(@id,@user,@ticket,@expiry)");
-  cmd.Parameters.AddWithValue("id",Hash(key));cmd.Parameters.AddWithValue("user",Guid.Parse(ticket.Principal.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value));cmd.Parameters.AddWithValue("ticket",protector.Protect(TicketSerializer.Default.Serialize(ticket)));cmd.Parameters.AddWithValue("expiry",expires);await cmd.ExecuteNonQueryAsync();return key;
+  cmd.Parameters.AddWithValue("id",Hash(key));cmd.Parameters.AddWithValue("user",Guid.Parse(ticket.Principal.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value));cmd.Parameters.AddWithValue("ticket",protector.CreateProtector(Hash(key)).Protect(TicketSerializer.Default.Serialize(ticket)));cmd.Parameters.AddWithValue("expiry",expires);await cmd.ExecuteNonQueryAsync();return key;
  }
  public Task RenewAsync(string key,AuthenticationTicket ticket)=>Task.CompletedTask; // Never slide or extend absolute lifetime.
  public async Task<AuthenticationTicket?> RetrieveAsync(string key){
   if(db is null)return cache.TryGetValue<AuthenticationTicket>(key,out var t)?t:null;
   await using var cmd=db.CreateCommand("SELECT protected_ticket FROM admin_ticket_sessions WHERE id_hash=@id AND expires_at>now()");cmd.Parameters.AddWithValue("id",Hash(key));var blob=await cmd.ExecuteScalarAsync();if(blob is not byte[] bytes)return null;
-  try{var ticket=TicketSerializer.Default.Deserialize(protector.Unprotect(bytes));return ticket?.Properties.ExpiresUtc>DateTimeOffset.UtcNow?ticket:null;}catch(CryptographicException){return null;}
+  try{var ticket=TicketSerializer.Default.Deserialize(protector.CreateProtector(Hash(key)).Unprotect(bytes));return ticket?.Properties.ExpiresUtc>DateTimeOffset.UtcNow?ticket:null;}catch(CryptographicException){return null;}
  }
  public async Task RemoveAsync(string key){if(db is null){cache.Remove(key);return;}await using var cmd=db.CreateCommand("DELETE FROM admin_ticket_sessions WHERE id_hash=@id");cmd.Parameters.AddWithValue("id",Hash(key));await cmd.ExecuteNonQueryAsync();}
  public async Task<bool> Ready(CancellationToken ct){if(db is null)return true;await using var cmd=db.CreateCommand("SELECT to_regclass('admin_ticket_sessions') IS NOT NULL");cmd.CommandTimeout=2;return (bool)(await cmd.ExecuteScalarAsync(ct))!;}
