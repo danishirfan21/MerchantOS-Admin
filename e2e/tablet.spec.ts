@@ -49,9 +49,9 @@ test('tablet order search, UTC date filter and pagination use the returned windo
   await expect(page).toHaveURL(/page=2/);
   expect(await page.locator('tbody tr').first().innerText()).not.toBe(first);
  }
- await page.getByLabel('Date range (UTC)',{exact:true}).selectOption('week');
+ await page.getByLabel('Date range (Asia/Riyadh)',{exact:true}).selectOption('week');
  await expect(page).toHaveURL(/range=week/);
- await expect(page.locator('.data-scope')).toContainText('latest 100');
+ await expect(page.locator('.data-scope')).toContainText('Complete history');
 });
 test('tablet forms and tables fit and receipt has one final print action',async({page})=>{
  for(const url of ['/Admin/Products','/Admin/Inventory','/Admin/Orders']){

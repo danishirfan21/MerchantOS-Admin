@@ -9,7 +9,7 @@ ASP.NET Core MVC/Razor 10 retail administration, with Bootstrap 5, jQuery, escap
 - Product drawer: Edit Product, Adjust Stock and View History. Names (English/Arabic), category and integer-halalas selling price can change; product IDs/SKUs and historical receipts cannot.
 - Restock, damage/loss and absolute stock corrections require a reason, a current stock version and explicit confirmation. Backend row locks and idempotency protect balances and retries.
 - Bounded, persistent history shows authoritative actor, UTC time, before/after values and reason.
-- Existing filters/sorting/seven-row pagination remain; rows and stock summaries refresh after confirmed writes. Orders still cover only the latest 100 receipts. Stock threshold 5 remains a presentation rule.
+- Existing filters/sorting/seven-row pagination remain; rows and stock summaries refresh after confirmed writes. Orders now query complete history on the server. Stock threshold 5 remains a presentation rule.
 
 [Management contracts and behavior](docs/management.md) · [Authentication and setup](docs/authentication.md) · [Executed status](PROJECT_STATUS.md).
 
@@ -38,8 +38,14 @@ npm run test:e2e
 
 Browser/integration verification requires the real POS and isolated PostgreSQL fixture with environment-provided temporary users; use the workflow for reproducibility. Management tests intentionally modify isolated data, then restore product/stock through audited APIs. Do not run them on valuable data. Authentication stays enabled. CI pins the POS commit, runs checkout/security/management integration, all existing responsive tests and new form scenarios, and audits reports for credential exposure before uploading.
 
-Baseline security PR #5 and responsive PRs#1–4 are merged. Current Milestone 5 is [Admin PR #6](https://github.com/danishirfan21/MerchantOS-Admin/pull/6), dependent on [POS PR #4](https://github.com/danishirfan21/MerchantOS-POS/pull/4); both remain unmerged for review. Historical visual decisions: [desktop](docs/desktop-visual-review.md), [tablet](docs/tablet-visual-review.md), [mobile](docs/mobile-visual-review.md), [assets](docs/design-assets.md).
+Baseline security PR #5 and responsive PRs#1–4 are merged. Current Milestone 5 is [Admin PR #6](https://github.com/danishirfan21/MerchantOS-Admin/pull/6), dependent on [POS PR #4](https://github.com/danishirfan21/MerchantOS-POS/pull/4); both are merged. Historical visual decisions: [desktop](docs/desktop-visual-review.md), [tablet](docs/tablet-visual-review.md), [mobile](docs/mobile-visual-review.md), [assets](docs/design-assets.md).
 
 ## Limits
 
 Local/isolated demo only; no public deployment approval. Single-instance Admin ticket cache, managed encrypted keys, MFA/recovery, production provisioning, distributed throttling/session storage and monitoring remain documented future work. No creation/deletion, SKU reassignment, refunds, suppliers, user management or new payment integration. New forms require JavaScript; existing read-only GET pages continue working without it. Audit before/after fields is compact and bounded, not an enterprise audit dashboard. No production readiness claim is made from CI.
+
+## Historical reporting (Milestone 6)
+
+Overview uses a PostgreSQL reporting snapshot for Today/Yesterday/Last7Days/Last30Days/Custom Range in Asia/Riyadh. Sales revenue includes VAT; a compact breakdown explains gross, discounts, net-before-VAT, VAT and rounded average order. Catalog and inventory cards remain explicitly current snapshots. The accessible Sales Rhythm chart uses real zero-filled hourly/daily/monthly buckets. Payment amounts distinguish simulated card; top products use historical line prices before discounts/VAT.
+
+Orders queries the server for every page/filter and browses complete history. Seven rows/page preserves the approved layout; the API defaults20 and bounds pages to100rows. CSV uses the exact selected filters and max10000rows. See [reporting architecture, formulas, date policy and limits](docs/reporting.md). Current feature [Admin PR #7](https://github.com/danishirfan21/MerchantOS-Admin/pull/7) depends on POS PR #5; both remain unmerged. Milestone 5 PR #6 is already merged.

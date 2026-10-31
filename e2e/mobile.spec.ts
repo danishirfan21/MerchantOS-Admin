@@ -108,7 +108,7 @@ test('order cards search, filter, paginate and open the persisted receipt',async
  await page.getByLabel('Payment method',{exact:true}).selectOption('cash');
  await expect(page).toHaveURL(/payment=cash/);
  expect((await page.locator('.mobile-order-meta>span').allTextContents()).every(t=>t==='Cash')).toBeTruthy();
- await page.getByLabel('Date range (UTC)',{exact:true}).selectOption('week');
+ await page.getByLabel('Date range (Asia/Riyadh)',{exact:true}).selectOption('week');
  await expect(page).toHaveURL(/range=week/);
  await page.locator('.mobile-order-card .btn').first().tap();
  await expect(page.getByRole('heading',{name:'Purchased Items',exact:false})).toBeVisible();

@@ -13,6 +13,17 @@ public sealed class FakePos : IPosClient {
     public bool Fail { get; set; }
     public List<ProductDto> Catalog { get; set; } = [new("a", "SKU-A", "Laptop", "حاسوب", "Computers", 12345, 5, "", "", null), new("b", "SKU-B", "Mouse", "فأرة", "Accessories", 1000, 0, "", "", null)];
     public List<OrderDto> Sales { get; set; } = [new(Guid.NewGuid(), "MOS-TEST", DateTime.UtcNow, "SAR", "completed", 1000, 0, 150, 1150, "cash", 0, [])];
+    public Task<OrderPage> QueryOrders(ReportFilters f,int page,int size,CancellationToken ct) {
+        if(Fail)throw new PosUnavailableException(new Exception());
+        var today=DateTime.UtcNow.AddHours(3).Date;
+        var rows=Sales.Where(o=>string.IsNullOrWhiteSpace(f.Search)||o.OrderNumber.Contains(f.Search,StringComparison.OrdinalIgnoreCase)).Where(o=>string.IsNullOrEmpty(f.Payment)||o.PaymentMethod==f.Payment).Where(o=>f.Range switch {"today"=>o.CreatedAt.ToUniversalTime().AddHours(3).Date==today,"yesterday"=>o.CreatedAt.ToUniversalTime().AddHours(3).Date==today.AddDays(-1),_=>true}).OrderByDescending(o=>o.CreatedAt).ThenByDescending(o=>o.Id).ToList();
+        return Task.FromResult(new OrderPage(rows.Skip((page-1)*size).Take(size).ToList(),page,size,rows.Count,page*size<rows.Count));
+    }
+    Task<SalesReport> IPosClient.Sales(ReportFilters f,CancellationToken ct) {
+        if(Fail)throw new PosUnavailableException(new Exception());var rows=this.Sales.Where(o=>o.Currency=="SAR"&&o.Status=="completed").ToList();var n=rows.Count;var revenue=rows.Sum(o=>o.PayableHalalas);var gross=rows.Sum(o=>o.SubtotalHalalas);var discount=rows.Sum(o=>o.DiscountHalalas);var date=DateOnly.FromDateTime(DateTime.UtcNow.AddHours(3));
+        return Task.FromResult(new SalesReport(new(f.Range??"today",date,date,null,null,"Asia/Riyadh"),new(gross,discount,gross-discount,rows.Sum(o=>o.VatHalalas),revenue,n,n==0?0:(long)Math.Round((decimal)revenue/n)),"hour",rows.GroupBy(o=>o.CreatedAt.Hour).Select(g=>new SalesBucket(g.Key.ToString(),g.Sum(o=>o.PayableHalalas),g.Count())).ToList(),[],[]));
+    }
+    public Task<byte[]> Export(ReportFilters f,CancellationToken ct)=>Task.FromResult(Array.Empty<byte>());
     public Task<List<ProductDto>> Products(CancellationToken ct) => Fail ? throw new PosUnavailableException(new Exception()) : Task.FromResult(Catalog);
     public Task<ProductDto?> Product(string id, CancellationToken ct) => Task.FromResult(Catalog.Find(p=>p.Id==id));
     public Task<List<OrderDto>> Orders(CancellationToken ct) => Fail ? throw new PosUnavailableException(new Exception()) : Task.FromResult(Sales);

@@ -42,21 +42,20 @@ public sealed record OrdersVm(List<OrderDto> Orders, string? Search, string? Err
     public int WindowCount { get; init; }
     public string? Payment { get; init; }
     public string? Range { get; init; }
-    public PagerVm Pager => new(Page, 7, FilteredCount, "Orders", new() { ["search"] = Search, ["payment"] = Payment, ["range"] = Range });
+    public ReportFilters Filters {get;init;}=new();
+    public bool Invalid {get;init;}
+    public int PageSize {get;init;}=7;
+    public bool HasMore {get;init;}
+    public ReportPeriod? Period {get;init;}
+    public PagerVm Pager => new(Page, PageSize, FilteredCount, "Orders", new() { ["search"] = Filters.Search, ["payment"] = Filters.Payment, ["range"] = Filters.Range,["from"]=Filters.From,["to"]=Filters.To,["status"]=Filters.Status });
 }
 public sealed record DashboardVm(CatalogVm Catalog, OrdersVm Orders) {
-    public List<HourBucket> Rhythm {
-        get {
-            var completed = Orders.Orders.Where(o => o.Status == "completed").ToList();
-            if (completed.Count == 0) return [];
-            var latest = completed.Max(o => o.CreatedAt.ToUniversalTime());
-            var start = latest.Date.AddHours(Math.Clamp(latest.Hour - 8, 0, 15));
-            return Enumerable.Range(0, 9).Select(i => new HourBucket(start.AddHours(i),
-                completed.Count(o => o.CreatedAt.ToUniversalTime() >= start.AddHours(i) && o.CreatedAt.ToUniversalTime() < start.AddHours(i + 1)))).ToList();
-        }
-    }
-    public int CompletedOrders => Orders.Orders.Count(o => o.Status == "completed");
-    public long SalesHalalas => Orders.Orders.Where(o => o.Status == "completed" && o.Currency == "SAR").Sum(o => o.PayableHalalas);
+    public SalesReport? Report {get;init;}
+    public ReportFilters Filters {get;init;}=new("today");
+    public bool Invalid {get;init;}
+    public List<HourBucket> Rhythm => Report is null||Report.Summary.CompletedOrders==0?[]:Report.Trend.Select(b=>new HourBucket(DateTime.MinValue,(int)b.CompletedOrders)).ToList();
+    public long CompletedOrders => Report?.Summary.CompletedOrders??0;
+    public long SalesHalalas => Report?.Summary.RevenueHalalas??0;
 }
 
 public sealed record HourBucket(DateTime Hour, int Count);
@@ -68,6 +67,6 @@ public sealed record PagerVm(int Page, int PageSize, int Total, string Action, D
     private string Url(int page) => Microsoft.AspNetCore.WebUtilities.QueryHelpers.AddQueryString(
         "/Admin/" + Action, Filters.Concat(new[] { new KeyValuePair<string, string?>("page", page.ToString()) }));
     public List<PageLink> Links => new[] { new PageLink("Previous", Page > 1 ? Url(Page - 1) : null, false, Page <= 1) }
-        .Concat(Enumerable.Range(1, TotalPages).Select(p => new PageLink(p.ToString(), Url(p), p == Page, false)))
+        .Concat(Enumerable.Range(Math.Max(1,Page-2),Math.Max(0,Math.Min(TotalPages,Page+2)-Math.Max(1,Page-2)+1)).Select(p => new PageLink(p.ToString(), Url(p), p == Page, false)))
         .Append(new PageLink("Next", Page < TotalPages ? Url(Page + 1) : null, false, Page >= TotalPages)).ToList();
 }
