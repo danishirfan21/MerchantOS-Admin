@@ -9,7 +9,7 @@ public sealed class ProductEdit {
  [Required,RegularExpression("^(Phones|Audio|Wearables|Gaming|Power|Accessories)$")]public string Category {get;set;}="";
  [Required,RegularExpression(@"^\d{1,7}(\.\d{1,2})?$")]public string Price {get;set;}="";
  [Range(1,long.MaxValue)]public long Version {get;set;}
- public long? Halalas()=>decimal.TryParse(Price,System.Globalization.NumberStyles.AllowDecimalPoint,System.Globalization.CultureInfo.InvariantCulture,out var n)&&n>0&&n<=1000000?(long)(n*100):null;
+ public long? Halalas()=>decimal.TryParse(Price,System.Globalization.NumberStyles.AllowDecimalPoint,System.Globalization.CultureInfo.InvariantCulture,out var n)&&n>0&&n<=1000000&&decimal.Truncate(n*100)==n*100?(long)(n*100):null;
 }
 public sealed class InventoryEdit {
  [Required,StringLength(32),RegularExpression("^[a-zA-Z0-9_-]+$")]public string Id {get;set;}="";

@@ -10,7 +10,7 @@ Sessions expire absolutely after 30 minutes and never slide. Logout is an authen
 
 ## Setup
 
-1. Use the exact authentication-enabled POS revision pinned in `.github/workflows/verify.yml` and linked in the security PR dependency. Apply its `004_identity.sql` migration after existing checkout migrations; existing data must not be reset.
+1. Use the exact authentication-enabled POS revision pinned in `.github/workflows/verify.yml` and linked in the security PR dependency. Apply all numeric migrations, including identity004 and management005, after existing checkout migrations; existing data must not be reset.
 2. Provision Administrator and Cashier development users with POS's documented `--bootstrap-user` command and environment-only credentials. No accounts are provisioned automatically by the applications; no public registration or known passwords exist.
 3. Run POS API and Admin over HTTPS by default. Set `PosApi__BaseUrl` to its loopback HTTPS endpoint and configure Admin's HTTPS URL/development certificate. API calls remain on the server; frontend pages never need an API password.
 4. For explicit loopback-only development/CI, both processes may set `ASPNETCORE_ENVIRONMENT=Development` and `Security__AllowLoopbackHttp=true`. Every HTTP request still checks a loopback Host and remote IP; this exception refuses non-Development startup. No authentication bypass exists in CI. Remote/internal-container HTTP is rejected. The production default keeps cookies Secure; all session/antiforgery cookies are HttpOnly and SameSite=Strict.
@@ -26,7 +26,7 @@ Traces are disabled because traces can contain cookies/password bodies. Temporar
 
 ## Limits
 
-This remains a local demo and is not approved for public deployment. MFA, password recovery/change, production account administration, detailed security audit logs, production encrypted key storage and distributed throttling are future work. POS owns all authorization; new backend endpoints deny by default until explicitly classified. The Administrator role is not checkout permission. No business editing, inventory adjustment, real payment processing or refunds are introduced.
+This remains a local demo and is not approved for public deployment. MFA, password recovery/change, production account administration, detailed security audit logs, production encrypted key storage and distributed throttling are future work. POS owns all authorization; new backend endpoints deny by default until explicitly classified. The Administrator role is not checkout permission. Milestone5 adds explicitly authorized product/inventory writes; see management.md. Real payment processing/refunds remain out of scope.
 
 ## Executed evidence
 

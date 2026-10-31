@@ -39,3 +39,9 @@ test('forms support keyboard cancel and reject expired session writes',async({pa
  await details(page);await page.getByRole('button',{name:'Edit Product',exact:true}).click();await expect(page.locator('.management-title')).toBeFocused();await page.keyboard.press('Escape');await expect(page.locator('#product-drawer')).not.toHaveClass(/show/);
  await details(page);await page.getByRole('button',{name:'Edit Product',exact:true}).click();await page.context().clearCookies();await page.getByRole('button',{name:'Save Changes',exact:true}).click();await expect(page.getByRole('alert')).toContainText('Session expired');
 });
+test('uncertain stock response retries the same committed adjustment without duplication',async({page})=>{
+ await details(page,true);await page.getByRole('button',{name:'Adjust Stock',exact:true}).click();await page.getByLabel('Quantity',{exact:true}).fill('1');await page.getByLabel('Reason',{exact:true}).fill('Retry verification');await page.getByRole('button',{name:'Review Adjustment'}).click();
+ let first=true;await page.route('**/Management/AdjustInventory',async route=>{if(first){first=false;const response=await route.fetch();expect(response.status()).toBe(200);await route.abort('failed');}else await route.continue();});
+ await page.getByRole('button',{name:'Confirm Adjustment',exact:true}).click();await expect(page.getByRole('alert')).toContainText('Retry sends the same request');await expect(page.getByLabel('Quantity',{exact:true})).toBeDisabled();expect((await get(page.request)).stock).toBe(original.stock+1);
+ await page.getByRole('button',{name:'Confirm Adjustment',exact:true}).click();await expect(page.getByRole('heading',{name:'Change recorded'})).toBeVisible();expect((await get(page.request)).stock).toBe(original.stock+1);
+});
