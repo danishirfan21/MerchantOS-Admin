@@ -9,3 +9,12 @@ test-results/
 src/MerchantOS.Admin/wwwroot/vendor/
 src/MerchantOS.Admin/wwwroot/js/templates.js
 reference-pos/
+
+.staging/
+*.pfx
+*.dump
+*.dump.cms
+*key.pem
+*.env
+
+operational-evidence/
