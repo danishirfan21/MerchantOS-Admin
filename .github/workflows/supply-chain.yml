@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           repository: danishirfan21/MerchantOS-POS
-          ref: b7392670b6f3e3f90107cd440a2462be62c0eec3
+          ref: 7bf5db0dd39cb258eb1b0a31eeb383c58d28e01c
           path: reference-pos
       - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68
         with:
