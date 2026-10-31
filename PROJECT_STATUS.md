@@ -6,7 +6,7 @@ Branch feature/product-inventory-management; [PR #6](https://github.com/danishir
 
 Product editing, reviewed inventory adjustments and bounded audit history implemented within the existing drawer. Typed authenticated server-side writes preserve both MVC and backend CSRF. Optimistic conflicts, safe retry, duplicate submission, query-preserving row/summary refresh and session failures are handled. Original dashboard/order/receipt layouts and financial calculations remain intact. See docs/management.md for contracts and limitations.
 
-Local47 .NET tests pass, preserving39 previous cases. Three template checks and original 61responsive browser cases remain, with18 new management browser cases (6 scenarios × 3 viewports). Final CI/screenshots and exact verified heads are recorded in PR #6 after execution; no pending result is claimed as passed here.
+Local 52 .NET tests pass, preserving39 previous cases. Three template checks and original 61responsive browser cases remain, with18 new management browser cases (6 scenarios × 3 viewports). Initial CI41206295568 passed 47 .NET / 3 templates / 76 browser tests and real management/security integration. Final CI/screenshots and exact verified heads are recorded in PR #6 after execution; no pending result is claimed as passed here.
 
 ## Merged baseline
 

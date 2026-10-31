@@ -4,7 +4,7 @@
 
 The current user's backend session stays inside Admin's native server ticket. ManagementClient forwards it per request using PosSessionHandler (pooled handlers have cookies disabled), fetches an authenticated backend CSRF token, then posts a narrowly projected DTO. Browser POSTs independently require MVC antiforgery. Anonymous Management routes return401; expired sessions cannot write. All actions require Administrator; POS independently applies separate ProductManagement, InventoryManagement and AuditRead policies. Client-supplied actor IDs/roles are never forwarded.
 
-CI's exact backend revision is the `ref` in .github/workflows/verify.yml. POS PR #4 documents API contracts; that commit must be retained when merging POS before Admin. Security PR #5 is already merged.
+CI pins POS `12eff7f1f772e52d6ff13c1c00a1c6f2769afad4` in .github/workflows/verify.yml; its 16 .NET, 21 Angular unit, 21 browser, 99 management and 39 security checks passed. POS PR #4 documents API contracts; that commit must be retained when merging POS before Admin. Security PR #5 is already merged.
 
 | API | Contract |
 |---|---|
