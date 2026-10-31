@@ -31,3 +31,8 @@ Historical visual rationale remains in docs/*-visual-review.md. All15approved sc
 ## Limits
 
 Local/isolated demo only; no public deployment. No second database, creation/deletion, refunds or expanded permissions system. Single-instance ticket cache, production keys/provisioning, MFA/recovery and distributed infrastructure remain future work. Historical reporting now replaces the earlier latest-100-order limit; stock threshold 5 is a presentation rule. See README and authentication/management docs.
+
+
+## Milestone 7 — operational staging
+
+Implementation in new unmerged feature PRs. See [staging operations and incident runbook](docs/staging-operations.md) and [evidence/readiness matrix](docs/staging-readiness.md). Persistent protected keys, durable Admin tickets, strict local HTTPS Compose, safe migrations, encrypted backup/restore, health/readiness and correlation-safe logging are implemented. Final container/recovery and dependency findings are tracked in the matrix. No public deployment or automatic merge.

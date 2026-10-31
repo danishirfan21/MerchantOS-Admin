@@ -49,3 +49,8 @@ Local/isolated demo only; no public deployment approval. Single-instance Admin t
 Overview uses a PostgreSQL reporting snapshot for Today/Yesterday/Last7Days/Last30Days/Custom Range in Asia/Riyadh. Sales revenue includes VAT; a compact breakdown explains gross, discounts, net-before-VAT, VAT and rounded average order. Catalog and inventory cards remain explicitly current snapshots. The accessible Sales Rhythm chart uses real zero-filled hourly/daily/monthly buckets. Payment amounts distinguish simulated card; top products use historical line prices before discounts/VAT.
 
 Orders queries the server for every page/filter and browses complete history. Seven rows/page preserves the approved layout; the API defaults20 and bounds pages to100rows. CSV uses the exact selected filters and max10000rows. See [reporting architecture, formulas, date policy and limits](docs/reporting.md). Current feature [Admin PR #7](https://github.com/danishirfan21/MerchantOS-Admin/pull/7) depends on POS PR #5; both remain unmerged. Milestone 5 PR #6 is already merged.
+
+
+## Milestone 7 — operational staging
+
+Implementation in new unmerged feature PRs. See [staging operations and incident runbook](docs/staging-operations.md) and [evidence/readiness matrix](docs/staging-readiness.md). Persistent protected keys, durable Admin tickets, strict local HTTPS Compose, safe migrations, encrypted backup/restore, health/readiness and correlation-safe logging are implemented. Final container/recovery and dependency findings are tracked in the matrix. No public deployment or automatic merge.
