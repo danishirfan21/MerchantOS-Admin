@@ -1,0 +1,12 @@
+@model ManagedProduct
+<h2 tabindex="-1" class="management-title">Adjust Stock</h2><p class="management-product">@Model.Name · @Model.Sku</p><p>Current stock: <strong>@Model.Stock units</strong></p>
+<form method="post" asp-controller="Management" asp-action="AdjustInventory" class="management-form stock-form" data-product-id="@Model.Id" data-stock="@Model.Stock">
+<input type="hidden" name="Id" value="@Model.Id"><input type="hidden" name="StockVersion" value="@Model.StockVersion"><input type="hidden" name="IdempotencyKey" value="@Guid.NewGuid()">
+<div class="management-errors" role="alert" tabindex="-1"></div>
+<label for="adjust-operation">Adjustment type</label><select class="form-select" id="adjust-operation" name="Operation"><option value="restock">Restock</option><option value="correction">Stock Correction (counted balance)</option><option value="damage">Damage or Loss</option></select>
+<label for="adjust-quantity">Quantity</label><input class="form-control" id="adjust-quantity" name="Quantity" type="number" min="0" max="2147483647" step="1" required inputmode="numeric" aria-describedby="quantity-help"><small id="quantity-help">Restock/loss: units to add/remove. Correction: total units counted.</small>
+<label for="adjust-reason">Reason</label><textarea class="form-control" id="adjust-reason" name="Reason" required maxlength="500" rows="3"></textarea>
+<p class="stock-preview" role="status"></p>
+<div class="adjustment-review" hidden><h3>Review adjustment</h3><p class="review-summary"></p><p>The server checks stock again before applying this change.</p><button type="submit" class="btn btn-emerald confirm-adjustment">Confirm Adjustment</button><button type="button" class="btn btn-light review-back">Back to form</button></div>
+<div class="management-actions initial-actions"><button type="button" class="btn btn-emerald review-adjustment">Review Adjustment</button><button type="button" class="btn btn-light management-cancel" data-product-id="@Model.Id">Cancel</button></div>
+</form>

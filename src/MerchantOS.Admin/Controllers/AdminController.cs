@@ -16,6 +16,7 @@ public sealed class AdminController(AdminService service, IPosClient client) : C
         if (!ModelState.IsValid) return BadRequest("Invalid filters.");
         return View("Catalog", await service.Catalog(search, category, stock, true, ct, page, sort));
     }
+    public async Task<IActionResult> CatalogSummary(bool inventory,CancellationToken ct) => PartialView("_CatalogSummary",await service.Catalog(null,null,null,inventory,ct));
     public async Task<IActionResult> ProductRows([StringLength(120)] string? search, [StringLength(80)] string? category,
         [RegularExpression("^(low|out|available|attention)?$")] string? stock, CancellationToken ct, [Range(1, 10000)] int page = 1,
         [RegularExpression("^(name|price-desc|price-asc|stock-desc)$")] string sort = "price-desc", bool inventory = false) {

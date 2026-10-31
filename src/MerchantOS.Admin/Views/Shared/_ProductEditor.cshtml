@@ -1,0 +1,11 @@
+@model ManagedProduct
+<h2 tabindex="-1" class="management-title">Edit Product</h2><p>@Model.Sku · Product identity is preserved.</p>
+<form method="post" asp-controller="Management" asp-action="SaveProduct" class="management-form" data-product-id="@Model.Id">
+<input type="hidden" name="Id" value="@Model.Id"><input type="hidden" name="Version" value="@Model.Version">
+<div class="management-errors" role="alert" tabindex="-1"></div>
+<label for="edit-name">Product name</label><input class="form-control" id="edit-name" name="Name" value="@Model.Name" required maxlength="240">
+<label for="edit-arabic">Arabic name</label><input class="form-control" id="edit-arabic" name="NameAr" value="@Model.NameAr" required maxlength="240" dir="auto">
+<label for="edit-category">Product category</label><select class="form-select" id="edit-category" name="Category">@foreach(var category in new[]{"Phones","Audio","Wearables","Gaming","Power","Accessories"}){<option selected="@(category==Model.Category)">@category</option>}</select>
+<label for="edit-price">Selling price (SAR)</label><input class="form-control" id="edit-price" name="Price" value="@((Model.PriceHalalas/100m).ToString("0.00",System.Globalization.CultureInfo.InvariantCulture))" required inputmode="decimal" pattern="[0-9]+(\.[0-9]{1,2})?" aria-describedby="price-help"><small id="price-help">0.01–1,000,000.00 SAR. Existing receipts keep their original price.</small>
+<div class="management-actions"><button type="submit" class="btn btn-emerald">Save Changes</button><button type="button" class="btn btn-light management-cancel" data-product-id="@Model.Id">Cancel</button></div>
+</form>

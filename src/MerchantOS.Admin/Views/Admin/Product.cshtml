@@ -1,3 +1,3 @@
 @model ProductDto
 @{ ViewData["Title"] = "Products"; }
-<a class="back-link" asp-action="Products"><span class="icon" aria-hidden="true">arrow_back</span>Back to Products</a><div class="page-heading"><div><h1>@Model.Name</h1><p>Current product record · read only</p></div></div><section class="panel standalone-product"><partial name="_ProductDetails" model="Model" /></section>
+<a class="back-link" asp-action="Products"><span class="icon" aria-hidden="true">arrow_back</span>Back to Products</a><div class="page-heading"><div><h1>@Model.Name</h1><p>Current product record</p></div></div><section class="panel standalone-product"><partial name="_ProductDetails" model="Model" /></section>

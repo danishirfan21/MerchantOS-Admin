@@ -1,0 +1,3 @@
+@model CatalogVm
+<partial name="_StockCards" model="Model" />
+@if(Model.Inventory && Model.Error is null) { <section class="attention-banner"><span class="attention-symbol"><span class="icon" aria-hidden="true">notification_important</span></span><div><h2>@(Model.LowStock + Model.OutOfStock) products require attention</h2><p>Stock is low or depleted. Demo reorder threshold: 5 units for every product.</p></div><a class="btn btn-white" asp-action="Inventory" asp-route-stock="attention"><span class="icon" aria-hidden="true">filter_list</span>Filter Low / Depleted</a></section> }
