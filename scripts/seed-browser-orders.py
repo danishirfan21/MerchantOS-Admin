@@ -2,6 +2,10 @@
 import json
 import os
 import urllib.request
+import sys
+sys.path.insert(0,str(__import__("pathlib").Path(__file__).resolve().parents[1]/"reference-pos/scripts"))
+from auth_client import Client
+auth=Client("CASHIER")
 
 if os.environ.get("GITHUB_ACTIONS") != "true":
     raise SystemExit("This fixture may run only in the disposable GitHub Actions integration job.")
@@ -15,11 +19,7 @@ for index in range(5):
         "cashTenderedHalalas": 1000000,
         "idempotencyKey": "admin-browser-pagination-" + str(index),
     }
-    request = urllib.request.Request(base + "/api/checkout", data=json.dumps(payload).encode(),
-                                     headers={"Content-Type": "application/json"})
-    with urllib.request.urlopen(request, timeout=20) as response:
-        assert response.status == 200
-        assert json.load(response)["status"] == "completed"
-with urllib.request.urlopen(base + "/api/orders", timeout=20) as response:
-    assert len(json.load(response)) >= 10
+    status, receipt = auth.request("/api/checkout",payload)
+    assert status == 200 and receipt["status"] == "completed"
+assert len(auth.request("/api/receipts")[1]) >= 10
 print("Disposable CI browser fixture ready: at least ten persisted receipts for real order pagination.")

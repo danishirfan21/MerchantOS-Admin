@@ -1,8 +1,12 @@
+# Authentication integration
+
+See [authentication architecture, HTTPS setup and provisioning](docs/authentication.md). Admin uses a server-managed HttpOnly session and the POS PostgreSQL identity authority. Provision accounts explicitly; no default credentials exist. The CI workflow pins the matching POS authentication revision.
+
 # MerchantOS Admin
 
 A server-rendered retail operations workspace built with ASP.NET Core MVC 10 and Razor. MerchantOS Admin complements [MerchantOS POS](https://github.com/danishirfan21/MerchantOS-POS) with read-only catalog, stock and order oversight. It does not implement checkout or maintain a second inventory database.
 
-> Local demo only. The upstream POS API is unauthenticated. Neither application may be exposed publicly. Milestone 1 is verified against the real POS API and PostgreSQL 17; see [PROJECT_STATUS.md](PROJECT_STATUS.md).
+> Local demo only. Authentication is required by both applications. Neither application is approved for public deployment. Milestone 1 is verified against the real POS API and PostgreSQL 17; see [PROJECT_STATUS.md](PROJECT_STATUS.md).
 
 ## Desktop UI — Stitch iteration 1
 

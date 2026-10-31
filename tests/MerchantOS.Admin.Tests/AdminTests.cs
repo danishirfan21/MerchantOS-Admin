@@ -85,18 +85,18 @@ public sealed class RenderingTests {
     [InlineData("/Admin/Inventory","Inventory")] [InlineData("/Admin/Orders","Orders")]
     public async Task RazorRenders(string path,string heading) {
         using var app=new WebApplicationFactory<Program>().WithWebHostBuilder(builder=>builder.ConfigureServices(services=> {
-            services.RemoveAll<IPosClient>(); services.AddSingleton<IPosClient>(new FakePos());
+            TestAuthentication.Add(services); services.RemoveAll<IPosClient>(); services.AddSingleton<IPosClient>(new FakePos());
         }));
-        var response=await app.CreateClient().GetAsync(path);
+        var response=await app.CreateClient(new WebApplicationFactoryClientOptions { BaseAddress=new Uri("https://localhost") }).GetAsync(path);
         Assert.Equal(HttpStatusCode.OK,response.StatusCode); Assert.Contains(heading,await response.Content.ReadAsStringAsync());
         Assert.Contains("frame-ancestors 'none'",response.Headers.GetValues("Content-Security-Policy").Single());
     }
     [Fact] public async Task RazorEncodesProductNames() {
         var pos=new FakePos(); pos.Catalog=[pos.Catalog[0] with {Name="<script>alert(1)</script>"}];
         using var app=new WebApplicationFactory<Program>().WithWebHostBuilder(builder=>builder.ConfigureServices(services=> {
-            services.RemoveAll<IPosClient>(); services.AddSingleton<IPosClient>(pos);
+            TestAuthentication.Add(services); services.RemoveAll<IPosClient>(); services.AddSingleton<IPosClient>(pos);
         }));
-        var html=await app.CreateClient().GetStringAsync("/Admin/Products");
+        var html=await app.CreateClient(new WebApplicationFactoryClientOptions { BaseAddress=new Uri("https://localhost") }).GetStringAsync("/Admin/Products");
         Assert.Contains("&lt;script&gt;",html); Assert.DoesNotContain("<script>alert(1)</script>",html);
     }
 }

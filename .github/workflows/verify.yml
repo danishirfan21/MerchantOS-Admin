@@ -17,12 +17,16 @@ jobs:
         options: >-
           --health-cmd "pg_isready -U merchantos -d merchantos"
           --health-interval 5s --health-timeout 3s --health-retries 15
+    env:
+      ASPNETCORE_ENVIRONMENT: Development
+      Security__AllowLoopbackHttp: true
+      ConnectionStrings__MerchantDb: Host=127.0.0.1;Port=5433;Database=merchantos;Username=merchantos;Password=merchantos_ci
     steps:
       - uses: actions/checkout@v4
       - uses: actions/checkout@v4
         with:
           repository: danishirfan21/MerchantOS-POS
-          ref: 68cc809edb2146e13632ff9cd316504b2dc5d25d
+          ref: 88a1a8029289278894ace040038463ac0b12b5b5
           path: reference-pos
       - uses: actions/setup-dotnet@v4
         with:
@@ -48,12 +52,16 @@ jobs:
           for file in reference-pos/db/init/*.sql reference-pos/db/migrations/*.sql; do
             psql -h 127.0.0.1 -p 5433 -U merchantos -d merchantos -v ON_ERROR_STOP=1 -f "$file"
           done
+      - name: Build authentication-enabled POS and provision isolated identities
+        run: |
+          dotnet build reference-pos/services/merchant-api/MerchantOS.Api.csproj -c Release
+          dotnet test reference-pos/services/merchant-api.Tests/MerchantOS.Api.Tests.csproj -c Release
+          python3 reference-pos/scripts/ci_accounts.py
       - name: Start real POS API and verify checkout fixture
         env:
           ConnectionStrings__MerchantDb: Host=127.0.0.1;Port=5433;Database=merchantos;Username=merchantos;Password=merchantos_ci
           ASPNETCORE_URLS: http://127.0.0.1:5080
         run: |
-          dotnet build reference-pos/services/merchant-api/MerchantOS.Api.csproj -c Release
           dotnet run --project reference-pos/services/merchant-api/MerchantOS.Api.csproj -c Release --no-build > pos-api.log 2>&1 &
           for i in {1..40}; do curl -fsS http://127.0.0.1:5080/api/health && break; sleep 2; done
           curl -fsS http://127.0.0.1:5080/api/health
@@ -72,8 +80,16 @@ jobs:
         run: |
           npx playwright install --with-deps chromium
           npm run test:e2e -- --project=desktop --project=tablet --project=mobile
-      - name: Upload screenshots, reports and logs
+      - name: Direct backend security verification
+        env:
+          PGPASSWORD: merchantos_ci
+        run: python3 reference-pos/scripts/verify_security.py
+      - name: Audit artifacts for credential exposure
+        id: artifact-audit
         if: always()
+        run: python3 reference-pos/scripts/audit_artifacts.py playwright-report test-results pos-api.log admin.log
+      - name: Upload screenshots, reports and logs
+        if: always() && steps.artifact-audit.outcome == 'success' 
         uses: actions/upload-artifact@v4
         with:
           name: merchantos-admin-verification
