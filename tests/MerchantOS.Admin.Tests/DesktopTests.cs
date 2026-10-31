@@ -19,7 +19,7 @@ public sealed class DesktopTests {
   Assert.Equal(2,vm.Products.Count);Assert.Equal(0,vm.HealthyStock);
  }
  [Fact] public async Task OrdersFilterPaymentAndStoreDateOnServer() {
-  var pos=new FakePos();var first=pos.Sales[0];pos.Sales.Add(first with {Id=Guid.NewGuid(),PaymentMethod="card",CreatedAt=DateTime.UtcNow.Date.AddDays(-1)});
+  var pos=new FakePos();var first=pos.Sales[0];pos.Sales.Add(first with {Id=Guid.NewGuid(),PaymentMethod="card",CreatedAt=DateTime.UtcNow.AddHours(3).Date.AddDays(-1).AddHours(9)});
   var vm=await new AdminService(pos).Orders(null,default,payment:"card",range:"yesterday");
   Assert.Single(vm.Orders);Assert.Equal(1,vm.WindowCount);Assert.Equal(1,vm.FilteredCount);
  }
