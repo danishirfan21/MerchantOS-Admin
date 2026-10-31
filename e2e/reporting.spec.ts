@@ -23,5 +23,5 @@ test('CSV download matches selected filters and oversized exports fail safely',a
  await page.goto('/Admin/ExportOrders');await expect(page.getByRole('alert')).toContainText('exceeds 10,000');await expect(page.getByRole('link',{name:'Return to Orders and narrow the filters'})).toBeVisible();
 });
 test('expired sessions and anonymous direct reporting cannot reveal history',async({page})=>{
- await page.goto('/?'+period);await page.context().clearCookies();await page.goto('/Admin/Orders?search=HIST-');await expect(page).toHaveURL(/Account\/Login/);const api=await request.newContext();for(const route of ['orders','sales','orders.csv'])expect((await api.get('http://127.0.0.1:5080/api/admin/reports/'+route)).status()).toBe(401);await api.dispose();
+ await page.goto('/?'+period);await page.context().clearCookies();await page.goto('/Admin/Orders?search=HIST-');await expect(page).toHaveURL(/Account\/Login/);const api=await request.newContext({storageState:{cookies:[],origins:[]}});for(const route of ['orders','sales','orders.csv'])expect((await api.get('http://127.0.0.1:5080/api/admin/reports/'+route)).status()).toBe(401);await api.dispose();
 });

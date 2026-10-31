@@ -6,7 +6,8 @@ public sealed record ReportFilters(string? Range=null,string? From=null,string? 
  public string Query(string path,int? page=null,int? pageSize=null){var values=Values();if(page is not null)values["page"]=page.ToString();if(pageSize is not null)values["pageSize"]=pageSize.ToString();return QueryHelpers.AddQueryString(path,values.Where(x=>!string.IsNullOrEmpty(x.Value)));}
  public string ExportUrl()=>QueryHelpers.AddQueryString("/Admin/ExportOrders",new Dictionary<string,string?>{["range"]=Range,["from"]=Range=="custom"?From:null,["to"]=Range=="custom"?To:null,["search"]=Search,["payment"]=Payment,["status"]=Status}.Where(x=>!string.IsNullOrEmpty(x.Value)));
 }
-public sealed record OrderPage(List<OrderDto> Items,int Page,int PageSize,long Total,bool HasMore);
+public sealed record ReportQueryInfo(ReportPeriod Period);
+public sealed record OrderPage(List<OrderDto> Items,int Page,int PageSize,long Total,bool HasMore,ReportQueryInfo? Filter=null);
 public sealed record SalesSummary(long GrossHalalas,long DiscountsHalalas,long NetBeforeVatHalalas,long VatHalalas,long RevenueHalalas,long CompletedOrders,long AverageOrderHalalas);
 public sealed record SalesBucket(string Label,long RevenueHalalas,long CompletedOrders);
 public sealed record PaymentSales(string Method,long CompletedOrders,long RevenueHalalas,decimal RevenueShare);

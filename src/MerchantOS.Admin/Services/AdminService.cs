@@ -30,11 +30,12 @@ public sealed class AdminService(IPosClient client) {
         var filters=new ReportFilters(range,from,to,search,payment,status);
         try {
             var result=await client.QueryOrders(filters,page,paginate?7:5,ct);
-            return new(result.Items,search,null){Page=page,FilteredCount=(int)Math.Min(int.MaxValue,result.Total),WindowCount=(int)Math.Min(int.MaxValue,result.Total),Payment=payment,Range=range,Filters=filters,PageSize=result.PageSize,HasMore=result.HasMore};
+            return new(result.Items,search,null){Page=page,FilteredCount=(int)Math.Min(int.MaxValue,result.Total),WindowCount=(int)Math.Min(int.MaxValue,result.Total),Payment=payment,Range=range,Filters=filters,PageSize=result.PageSize,HasMore=result.HasMore,Period=result.Filter?.Period};
         }catch(ReportRejectedException ex){return new([],search,ex.Message){Filters=filters,Invalid=true};}
         catch(PosUnavailableException ex){return new([],search,ex.Message){Filters=filters};}
     }
     public async Task<DashboardVm> Dashboard(CancellationToken ct,string? range="today",string? from=null,string? to=null) {
+        range=string.IsNullOrEmpty(range)?"today":range;
         var filters=new ReportFilters(range,from,to);
         var catalog=await Catalog(null,null,null,false,ct,paginate:false);
         var orders=await Orders(null,ct,range:range,paginate:false,from:from,to:to);

@@ -46,6 +46,7 @@ public sealed record OrdersVm(List<OrderDto> Orders, string? Search, string? Err
     public bool Invalid {get;init;}
     public int PageSize {get;init;}=7;
     public bool HasMore {get;init;}
+    public ReportPeriod? Period {get;init;}
     public PagerVm Pager => new(Page, PageSize, FilteredCount, "Orders", new() { ["search"] = Filters.Search, ["payment"] = Filters.Payment, ["range"] = Filters.Range,["from"]=Filters.From,["to"]=Filters.To,["status"]=Filters.Status });
 }
 public sealed record DashboardVm(CatalogVm Catalog, OrdersVm Orders) {
