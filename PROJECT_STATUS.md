@@ -4,7 +4,7 @@ Branch feature/sales-reporting-dashboard; [PR #7](https://github.com/danishirfan
 
 Historical server-side Orders, store-local Overview periods, authoritative financial KPIs, accessible revenue trends, cash/simulated-card breakdown, snapshot top products and bounded CSV implemented. Current inventory/catalog remain explicitly labeled. Existing management/audit/checkout/authentication and receipt printing are preserved. No public deployment.
 
-Local 56 .NET and 3 template checks passed. All 79 existing browser cases remain; 15 new reporting cases cover three viewports. Final CI and visual screenshots are recorded in PR #7 after execution. No pending result is described as passed.
+Local 58 .NET and 3 template checks passed. All 79 existing browser cases remain; 15 new reporting cases cover three viewports. Final CI and visual screenshots are recorded in PR #7 after execution. No pending result is described as passed.
 
 Milestone 5 PR #6 merged as61489430eff4a3843579ee08dba121128b36e8c0; POS PR #4 merged asad73c8e406fc1b42c8fdf4fd88b721d08f2ce320. Reporting contracts, exact money/date definitions, query indexes, offset consistency, CSV bounds and known limitations: docs/reporting.md.
 
@@ -18,7 +18,7 @@ Branch feature/product-inventory-management; [PR #6](https://github.com/danishir
 
 Product editing, reviewed inventory adjustments and bounded audit history implemented within the existing drawer. Typed authenticated server-side writes preserve both MVC and backend CSRF. Optimistic conflicts, safe retry, duplicate submission, query-preserving row/summary refresh and session failures are handled. Original dashboard/order/receipt layouts and financial calculations remain intact. See docs/management.md for contracts and limitations.
 
-Local 56 .NET tests pass, preserving39 previous cases. Three template checks and original 61responsive browser cases remain, with18 new management browser cases (6 scenarios × 3 viewports). Initial CI41206295568 passed 47 .NET / 3 templates / 76 browser tests and real management/security integration. Final CI/screenshots and exact verified heads are recorded in PR #6 after execution; no pending result is claimed as passed here.
+Local 58 .NET tests pass, preserving39 previous cases. Three template checks and original 61responsive browser cases remain, with18 new management browser cases (6 scenarios × 3 viewports). Initial CI41206295568 passed 47 .NET / 3 templates / 76 browser tests and real management/security integration. Final CI/screenshots and exact verified heads are recorded in PR #6 after execution; no pending result is claimed as passed here.
 
 ## Merged baseline
 

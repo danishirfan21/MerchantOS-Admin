@@ -10,3 +10,12 @@ public sealed class ReportingTests {
  [Fact]public void PresetsDoNotForwardStaleCustomDates(){var url=new ReportFilters("today","2020-01-01","2020-01-02").Query("api/admin/reports/sales");Assert.DoesNotContain("from=",url);Assert.DoesNotContain("to=",url);Assert.Contains("range=today",url);}
  [Fact]public async Task ReportingFailureIsUnavailableRatherThanZero(){var vm=await new AdminService(new FakePos{Fail=true}).Dashboard(default);Assert.Null(vm.Report);Assert.NotNull(vm.Orders.Error);}
 }
+public sealed class ReportingRenderingTests {
+ [Theory][InlineData("/")][InlineData("/Admin/Orders")]
+ public async Task UnavailableReportDoesNotRenderZeroSalesOrEmptyPagination(string path){
+  using var app=new Microsoft.AspNetCore.Mvc.Testing.WebApplicationFactory<Program>().WithWebHostBuilder(b=>b.ConfigureServices(services=>{
+   TestAuthentication.Add(services);Microsoft.Extensions.DependencyInjection.Extensions.ServiceCollectionDescriptorExtensions.RemoveAll<IPosClient>(services);Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<IPosClient>(services,new FakePos{Fail=true});
+  }));
+  var html=await app.CreateClient(new(){BaseAddress=new Uri("https://localhost")}).GetStringAsync(path);Assert.Contains("unavailable",html,StringComparison.OrdinalIgnoreCase);Assert.DoesNotContain("SAR 0.00",html);Assert.DoesNotContain("id=\"result-pagination\"",html);
+ }
+}

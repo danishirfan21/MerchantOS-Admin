@@ -5,4 +5,4 @@
 @if(Model.Error is not null) { <partial name="_ErrorNotice" model="Model.Error" /> }
 else if(Model.Orders.Count == 0) { <div class="empty"><h3>No orders found</h3><p>Sales completed in the POS appear here. Try clearing your search.</p></div> }
 else { <partial name="_OrderTable" model="Model.Orders" /> }
-<partial name="_Pagination" model="Model.Pager" /></section><p class="data-scope">Complete history is filtered and paginated on the server. Asia/Riyadh date filters apply to export too. Exports are limited to 10,000 rows; narrow filters for larger periods. Item details remain inside each receipt.</p>
+@if(Model.Error is null && Model.Orders.Count>0){<partial name="_Pagination" model="Model.Pager" />}</section><p class="data-scope">Complete history is filtered and paginated on the server. Asia/Riyadh date filters apply to export too. Exports are limited to 10,000 rows; narrow filters for larger periods. Item details remain inside each receipt.</p>
