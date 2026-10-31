@@ -8,7 +8,10 @@
     $('.navigation-toggle').attr('aria-expanded', event.type === 'shown' ? 'true' : 'false');
   });
   $('.print-receipt').on('click', function () { window.print(); });
-  $('.order-filters select').on('change', function () { this.form.requestSubmit(); });
+  function reportDates(form){var custom=$(form).find('[name=range]').val()==='custom';$(form).find('.custom-report-date input').prop('disabled',!custom);$(form).find('.custom-report-date').toggleClass('date-active',custom);}
+  $('.report-form').each(function(){reportDates(this);});
+  $('.report-form select').on('change',function(){reportDates(this.form);if(this.name==='range'&&this.value==='custom')return;this.form.requestSubmit();});
+  $('.report-form').on('submit',function(){$(this).attr('aria-busy','true').find('button[type=submit]').text('Loading…');});
   var drawerRequest, drawerSequence = 0, drawerTrigger;
   $(document).on('click', '.product-detail-link', function (event) {
     if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;

@@ -18,10 +18,10 @@ public sealed class DesktopTests {
   var vm=await new AdminService(new FakePos()).Catalog(null,null,"attention",true,default);
   Assert.Equal(2,vm.Products.Count);Assert.Equal(0,vm.HealthyStock);
  }
- [Fact] public async Task OrdersFilterPaymentAndUtcDateWithinWindow() {
+ [Fact] public async Task OrdersFilterPaymentAndStoreDateOnServer() {
   var pos=new FakePos();var first=pos.Sales[0];pos.Sales.Add(first with {Id=Guid.NewGuid(),PaymentMethod="card",CreatedAt=DateTime.UtcNow.Date.AddDays(-1)});
   var vm=await new AdminService(pos).Orders(null,default,payment:"card",range:"yesterday");
-  Assert.Single(vm.Orders);Assert.Equal(2,vm.WindowCount);Assert.Equal(1,vm.FilteredCount);
+  Assert.Single(vm.Orders);Assert.Equal(1,vm.WindowCount);Assert.Equal(1,vm.FilteredCount);
  }
  [Fact] public async Task DashboardAggregationUsesAllOrdersRatherThanFirstPage() {
   var pos=new FakePos();var sale=pos.Sales[0];pos.Sales=Enumerable.Range(0,12).Select(i=>sale with {Id=Guid.NewGuid()}).ToList();
