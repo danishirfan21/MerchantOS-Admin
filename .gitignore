@@ -18,3 +18,5 @@ reference-pos/
 *.env
 
 operational-evidence/
+
+security-evidence/
