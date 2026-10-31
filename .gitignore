@@ -20,3 +20,6 @@ reference-pos/
 operational-evidence/
 
 security-evidence/
+
+*.key
+*.cms
