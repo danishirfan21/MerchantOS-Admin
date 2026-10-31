@@ -11,7 +11,7 @@ builder.Services.AddMemoryCache();builder.Services.AddHttpContextAccessor();buil
 builder.Services.AddAuthentication("Admin").AddCookie("Admin",options=>{
  options.Cookie.Name="MerchantOS.Admin.Session";options.Cookie.HttpOnly=true;options.Cookie.SameSite=SameSiteMode.Strict;options.Cookie.SecurePolicy=localHttp?CookieSecurePolicy.SameAsRequest:CookieSecurePolicy.Always;
  options.LoginPath="/Account/Login";options.AccessDeniedPath="/Account/Denied";options.ExpireTimeSpan=TimeSpan.FromMinutes(30);options.SlidingExpiration=false;
- options.Events.OnRedirectToLogin=context=>{if(context.Request.Path=="/Admin/ProductRows")context.Response.StatusCode=401;else context.Response.Redirect(context.RedirectUri);return Task.CompletedTask;};
+ options.Events.OnRedirectToLogin=context=>{if(context.Request.Path=="/Admin/ProductRows" || context.Request.Path.StartsWithSegments("/Management"))context.Response.StatusCode=401;else context.Response.Redirect(context.RedirectUri);return Task.CompletedTask;};
  options.Events.OnRedirectToAccessDenied=context=>{context.Response.StatusCode=403;return Task.CompletedTask;};
  options.Events.OnValidatePrincipal=async context=>{
   context.Properties.Items.TryGetValue("backend",out var cookie);BackendUser? user=null;
@@ -31,6 +31,7 @@ void ConfigurePos(HttpClient client) {
 }
 builder.Services.AddHttpClient<IPosClient, PosClient>(ConfigurePos).ConfigurePrimaryHttpMessageHandler(()=>new HttpClientHandler {UseCookies=false,AllowAutoRedirect=false}).AddHttpMessageHandler<PosSessionHandler>();
 builder.Services.AddHttpClient("auth",ConfigurePos).ConfigurePrimaryHttpMessageHandler(()=>new HttpClientHandler {UseCookies=false,AllowAutoRedirect=false});
+builder.Services.AddHttpClient<ManagementClient>(ConfigurePos).ConfigurePrimaryHttpMessageHandler(()=>new HttpClientHandler {UseCookies=false,AllowAutoRedirect=false}).AddHttpMessageHandler<PosSessionHandler>();
 builder.Services.AddScoped<AdminService>();
 var app = builder.Build();
 app.UseExceptionHandler("/Admin/Error");

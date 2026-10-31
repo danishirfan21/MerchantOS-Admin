@@ -52,6 +52,7 @@
       $('#filter-status').text('Unable to refresh products. Previous results remain visible. Apply filters to retry.');
     }).always(function () { if (current === sequence) $('#product-rows, #product-cards').removeAttr('aria-busy'); });
   }
+  $(document).on('catalog:changed',function(){load(new URL(location.href).searchParams.get('page')||1);$.get('/Admin/CatalogSummary',{inventory:inventory}).done(function(html){$('#catalog-summary').html(html);});});
   form.on('submit', function (event) { event.preventDefault(); clearTimeout(timer); load(1); });
   form.find('select').on('change', function () { clearTimeout(timer); load(1); });
   form.find('input').on('input', function () { clearTimeout(timer); timer = setTimeout(function () { load(1); }, 300); });

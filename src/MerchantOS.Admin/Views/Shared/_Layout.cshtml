@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>@ViewData["Title"] · MerchantOS Admin</title><link rel="stylesheet" href="~/fonts/inter.css"><link rel="stylesheet" href="~/fonts/symbols.css">
-<link rel="stylesheet" href="~/vendor/bootstrap.min.css"><link rel="stylesheet" href="~/css/admin.css" asp-append-version="true"><link rel="stylesheet" href="~/css/mobile.css" media="screen and (max-width: 767px)" asp-append-version="true"></head>
+<link rel="stylesheet" href="~/vendor/bootstrap.min.css"><link rel="stylesheet" href="~/css/admin.css" asp-append-version="true"><link rel="stylesheet" href="~/css/mobile.css" media="screen and (max-width: 767px)" asp-append-version="true"><link rel="stylesheet" href="~/css/management.css" asp-append-version="true"></head>
 <body class="@ViewData["PageClass"]"><a class="skip-link" href="#main">Skip to content</a>
 <aside class="sidebar offcanvas-xl offcanvas-start" tabindex="-1" id="sidebar" aria-labelledby="navigation-title">
 <a class="brand" id="navigation-title" asp-action="Index" asp-controller="Admin"><span class="brand-mark">M</span><span>MerchantOS</span></a>
@@ -22,4 +22,5 @@
 @if(ViewData["PageClass"] as string != "receipt-page") { <partial name="_MobileNavigation" /> }
 <div class="offcanvas offcanvas-end product-drawer" tabindex="-1" id="product-drawer" aria-labelledby="product-drawer-title"><div class="offcanvas-header"><h2 id="product-drawer-title">Product Details</h2><button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close product details"></button></div><div class="offcanvas-body" id="product-drawer-body" aria-live="polite"></div></div>
 <script src="~/vendor/jquery.min.js"></script><script src="~/vendor/bootstrap.bundle.min.js"></script><script src="~/vendor/handlebars.runtime.min.js"></script><script src="~/js/templates.js" asp-append-version="true"></script><script src="~/js/admin.js" asp-append-version="true"></script>
+<script src="~/js/management.js" asp-append-version="true"></script>
 </body></html>
