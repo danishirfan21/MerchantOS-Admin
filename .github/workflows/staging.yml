@@ -6,12 +6,14 @@ jobs:
   staging:
     runs-on: ubuntu-24.04
     timeout-minutes: 50
+    env:
+      SOURCE_REVISION: "${{ github.event.pull_request.head.sha || github.sha }}"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           repository: danishirfan21/MerchantOS-POS
-          ref: 7d87016d592c0f73f175ca5becfeb292fdd9b388
+          ref: aed2f49ad9e059e0b0f96716de6a1307b2d513e7
           path: reference-pos
       - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68
         with:
