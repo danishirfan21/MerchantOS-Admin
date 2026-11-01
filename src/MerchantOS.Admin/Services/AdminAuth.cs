@@ -20,7 +20,7 @@ public sealed class BackendAuth(IHttpClientFactory factory) {
  async Task<HttpResponseMessage> Post(string cookie,string path,object body,CancellationToken ct){
   using var client=factory.CreateClient("auth");using var get=new HttpRequestMessage(HttpMethod.Get,"api/auth/csrf");if(cookie.Length>0)get.Headers.Add("Cookie",cookie);
   using var csrf=await client.SendAsync(get,ct);csrf.EnsureSuccessStatusCode();var token=await csrf.Content.ReadFromJsonAsync<CsrfToken>(cancellationToken:ct);
-  using var message=new HttpRequestMessage(HttpMethod.Post,path){Content=JsonContent.Create(body)};message.Headers.Add("Cookie",Merge(cookie,csrf));message.Headers.Add("X-CSRF-TOKEN",token!.Token);var response=await client.SendAsync(message,ct);
+  using var message=new HttpRequestMessage(HttpMethod.Post,path){Content=JsonContent.Create(body)};var merged=Merge(cookie,csrf);if(merged.Length>0)message.Headers.Add("Cookie",merged);message.Headers.Add("X-CSRF-TOKEN",token!.Token);var response=await client.SendAsync(message,ct);
   // Carry the cookie-token pair internally; never expose it in a browser DTO.
   response.OptionsSetCookie(Merge(cookie,csrf));return response;
  }

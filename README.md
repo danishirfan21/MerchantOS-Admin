@@ -1,3 +1,5 @@
+> **Milestone 8 in progress:** mandatory Administrator MFA and secure account recovery. [Enrollment, recovery, security events and restore reconciliation](docs/mfa-recovery.md). Milestone 7 is merged; final M8 integration/staging verification is pending. No merge or public deployment.
+
 # MerchantOS Admin
 
 ASP.NET Core MVC/Razor 10 retail administration, with Bootstrap 5, jQuery, escaped precompiled Handlebars and authenticated server-side POS API integration. The existing POS PostgreSQL database remains the only data authority. No separate Admin identity database or service-account password exists. Durable staging tickets use the existing POS database.

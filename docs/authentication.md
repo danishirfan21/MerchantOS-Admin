@@ -1,3 +1,5 @@
+> Milestone 8 changes authentication and restore policy. Read [MFA, recovery and identity reconciliation](mfa-recovery.md) first; earlier milestone details below remain historical where superseded.
+
 # Admin authentication integration
 
 Admin is a server-rendered backend-for-frontend using the authentication-enabled POS API as the only identity authority. POS stores users, roles, lockout state and revocable 30-minute sessions in its existing PostgreSQL database. Admin has no identity database and no long-lived service-account secret.
