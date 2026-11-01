@@ -6,32 +6,20 @@ jobs:
   verify:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
-    services:
-      postgres:
-        image: postgres:17-alpine
-        env:
-          POSTGRES_DB: merchantos
-          POSTGRES_USER: merchantos
-          POSTGRES_PASSWORD: merchantos_ci
-        ports: ['5433:5432']
-        options: >-
-          --health-cmd "pg_isready -U merchantos -d merchantos"
-          --health-interval 5s --health-timeout 3s --health-retries 15
     env:
       ASPNETCORE_ENVIRONMENT: Development
       Security__AllowLoopbackHttp: true
-      ConnectionStrings__MerchantDb: Host=127.0.0.1;Port=5433;Database=merchantos;Username=merchantos;Password=merchantos_ci
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           repository: danishirfan21/MerchantOS-POS
-          ref: f1b325578383b2c5c3e06c60e17093113223c311
+          ref: 1238815f38e848716491dce0d9a3c6ae72e536bd
           path: reference-pos
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68
         with:
           dotnet-version: '10.0.x'
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
         with:
           node-version: '24'
           cache: npm
@@ -45,9 +33,9 @@ jobs:
           dotnet restore tests/MerchantOS.Admin.Tests/MerchantOS.Admin.Tests.csproj
           dotnet build tests/MerchantOS.Admin.Tests/MerchantOS.Admin.Tests.csproj -c Release --no-restore
           dotnet test tests/MerchantOS.Admin.Tests/MerchantOS.Admin.Tests.csproj -c Release --no-build --logger "trx;LogFileName=admin.trx" --results-directory test-results/unit
+      - name: Create isolated database with ephemeral credentials
+        run: python3 reference-pos/deploy/ci_database.py
       - name: Initialize isolated POS database
-        env:
-          PGPASSWORD: merchantos_ci
         run: |
           for file in reference-pos/db/init/*.sql reference-pos/db/migrations/*.sql; do
             psql -h 127.0.0.1 -p 5433 -U merchantos -d merchantos -v ON_ERROR_STOP=1 -f "$file"
@@ -59,7 +47,6 @@ jobs:
           python3 reference-pos/scripts/ci_accounts.py
       - name: Start real POS API and verify checkout fixture
         env:
-          ConnectionStrings__MerchantDb: Host=127.0.0.1;Port=5433;Database=merchantos;Username=merchantos;Password=merchantos_ci
           ASPNETCORE_URLS: http://127.0.0.1:5080
         run: |
           dotnet run --project reference-pos/services/merchant-api/MerchantOS.Api.csproj -c Release --no-build > pos-api.log 2>&1 &
@@ -77,24 +64,16 @@ jobs:
           for i in {1..40}; do curl -fsS http://127.0.0.1:5090/ >/dev/null && break; sleep 2; done
           python3 scripts/verify-live.py
       - name: Seed isolated historical reporting fixture
-        env:
-          PGPASSWORD: merchantos_ci
         run: python3 reference-pos/scripts/report_fixture.py
       - name: Desktop, tablet and mobile Stitch browser verification
         run: |
           npx playwright install --with-deps chromium
           npm run test:e2e -- --project=desktop --project=tablet --project=mobile
       - name: Historical reporting integration and query plans
-        env:
-          PGPASSWORD: merchantos_ci
         run: python3 reference-pos/scripts/verify_reporting.py
       - name: Administrative PostgreSQL transaction verification
-        env:
-          PGPASSWORD: merchantos_ci
         run: python3 reference-pos/scripts/verify_management.py
       - name: Direct backend security verification
-        env:
-          PGPASSWORD: merchantos_ci
         run: python3 reference-pos/scripts/verify_security.py
       - name: Audit artifacts for credential exposure
         id: artifact-audit
@@ -102,7 +81,7 @@ jobs:
         run: python3 reference-pos/scripts/audit_artifacts.py playwright-report test-results pos-api.log admin.log report-query-plan.json
       - name: Upload screenshots, reports and logs
         if: always() && steps.artifact-audit.outcome == 'success' 
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: merchantos-admin-verification
           path: |

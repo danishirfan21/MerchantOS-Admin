@@ -1,0 +1,26 @@
+name: Isolated HTTPS staging recovery
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  staging:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: danishirfan21/MerchantOS-POS
+          ref: 1238815f38e848716491dce0d9a3c6ae72e536bd
+          path: reference-pos
+      - name: Build and exercise fresh disposable HTTPS topology
+        run: python3 reference-pos/deploy/verify_staging.py --directory "$RUNNER_TEMP/merchantos-staging" --admin-context .
+      - name: Audit bounded operational evidence
+        id: audit
+        if: always()
+        run: python3 reference-pos/scripts/audit_artifacts.py operational-evidence
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: always() && steps.audit.outcome == 'success'
+        with:
+          name: isolated-staging-evidence
+          path: operational-evidence/
