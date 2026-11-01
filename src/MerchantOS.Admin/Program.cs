@@ -20,9 +20,12 @@ builder.Services.AddAuthentication("Admin").AddCookie("Admin",options=>{
  options.Events.OnValidatePrincipal=async context=>{
   context.Properties.Items.TryGetValue("backend",out var cookie);BackendUser? user=null;
   try{if(cookie is not null)user=await context.HttpContext.RequestServices.GetRequiredService<BackendAuth>().Me(cookie,context.HttpContext.RequestAborted);}catch(Exception ex)when(ex is HttpRequestException or TaskCanceledException){throw new HttpRequestException("Identity authority temporarily unavailable.");}
-  if(user?.Role!="Administrator"){context.RejectPrincipal();await context.HttpContext.SignOutAsync("Admin");}
+  if(user?.Role!="Administrator"||!user.MfaVerified){context.RejectPrincipal();await context.HttpContext.SignOutAsync("Admin");}
  };
+}).AddCookie("Pending",options=>{
+ options.Cookie.Name="MerchantOS.Admin.Pending";options.Cookie.HttpOnly=true;options.Cookie.SameSite=SameSiteMode.Strict;options.Cookie.SecurePolicy=localHttp?CookieSecurePolicy.SameAsRequest:CookieSecurePolicy.Always;options.ExpireTimeSpan=TimeSpan.FromMinutes(5);options.SlidingExpiration=false;
 });
+builder.Services.AddOptions<CookieAuthenticationOptions>("Pending").Configure<AdminTicketStore>((o,s)=>o.SessionStore=s);
 builder.Services.AddOptions<CookieAuthenticationOptions>("Admin").Configure<AdminTicketStore>((o,s)=>o.SessionStore=s);
 builder.Services.AddAuthorization(options=>{options.FallbackPolicy=new AuthorizationPolicyBuilder().RequireRole("Administrator").Build();options.AddPolicy("OperationsRead",p=>p.RequireRole("Administrator"));});
 builder.Services.AddAntiforgery(options=>{options.Cookie.Name="MerchantOS.Admin.Csrf";options.Cookie.HttpOnly=true;options.Cookie.SameSite=SameSiteMode.Strict;options.Cookie.SecurePolicy=localHttp?CookieSecurePolicy.SameAsRequest:CookieSecurePolicy.Always;});

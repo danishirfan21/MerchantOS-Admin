@@ -11,8 +11,10 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           repository: danishirfan21/MerchantOS-POS
-          ref: 1238815f38e848716491dce0d9a3c6ae72e536bd
+          ref: 135480e1bb5e277495aee396d3d4108a5dfca987
           path: reference-pos
+      - name: Install checksum-verified Trivy 0.76.1
+        run: bash reference-pos/deploy/install-trivy.sh
       - name: Build and exercise fresh disposable HTTPS topology
         run: python3 reference-pos/deploy/verify_staging.py --directory "$RUNNER_TEMP/merchantos-staging" --admin-context .
       - name: Audit bounded operational evidence

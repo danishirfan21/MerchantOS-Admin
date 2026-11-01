@@ -14,6 +14,7 @@ COPY --from=assets /src/src/MerchantOS.Admin/wwwroot/vendor/ ./src/MerchantOS.Ad
 COPY --from=assets /src/src/MerchantOS.Admin/wwwroot/js/templates.js ./src/MerchantOS.Admin/wwwroot/js/templates.js
 RUN dotnet publish src/MerchantOS.Admin/MerchantOS.Admin.csproj -c Release -o /publish --no-restore
 FROM mcr.microsoft.com/dotnet/aspnet:10.0@sha256:de0ee358cdd672f7017a003bed21e9ac9ed48a27c922a59b18175b6e82fa7fee
+RUN apt-get update && apt-get upgrade -y --no-install-recommends && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY --from=build /publish/ ./
 ENV ASPNETCORE_URLS=https://+:8443 DOTNET_EnableDiagnostics=0
