@@ -28,7 +28,7 @@ Traces are disabled because traces can contain cookies/password bodies. Temporar
 
 ## Limits
 
-This remains a local demo and is not approved for public deployment. Staging now has gated operator account creation/password/role/disable/revocation commands and encrypted persistent keys. MFA, verified self-service recovery, immutable security audit collection, distributed throttling and assigned production operator/monitoring ownership remain blockers. POS owns all authorization; new backend endpoints deny by default until explicitly classified. The Administrator role is not checkout permission. Milestone5 adds explicitly authorized product/inventory writes; see management.md. Real payment processing/refunds remain out of scope.
+This remains a local demo and is not approved for public deployment. Staging now has gated operator account creation/password/role/disable/revocation commands and encrypted persistent keys. MFA and verified operator recovery are implemented in M8. Immutable off-host security audit collection, distributed throttling and assigned production operator/monitoring ownership remain blockers. POS owns all authorization; new backend endpoints deny by default until explicitly classified. The Administrator role is not checkout permission. Milestone5 adds explicitly authorized product/inventory writes; see management.md. Real payment processing/refunds remain out of scope.
 
 ## Executed evidence
 

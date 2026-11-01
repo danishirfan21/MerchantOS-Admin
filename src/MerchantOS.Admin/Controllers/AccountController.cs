@@ -29,7 +29,7 @@ public sealed class PasswordModel {
  [Required,StringLength(128,MinimumLength=14)]public string NewPassword{get;set;}="";
  [Compare(nameof(NewPassword))]public string ConfirmPassword{get;set;}="";
 }
-public sealed record CodesModel(string[] Codes,string ReturnUrl);
+public sealed record CodesModel(string[] Codes,string ReturnUrl,bool EnrollmentConfirmed=false);
 public sealed class AccountController(BackendAuth backend):Controller {
  async Task<AuthenticateResult?> Pending(){var result=await HttpContext.AuthenticateAsync("Pending");return result.Succeeded&&result.Properties?.ExpiresUtc>DateTimeOffset.UtcNow?result:null;}
  async Task<BackendSession?> Current(){var auth=await HttpContext.AuthenticateAsync("Admin");if(auth.Succeeded&&auth.Properties?.Items.TryGetValue("backend",out var cookie)==true&&cookie is not null)return new(new(Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!),User.Identity!.Name!,"Administrator",true),cookie,auth.Properties.ExpiresUtc);return null;}
@@ -47,14 +47,14 @@ public sealed class AccountController(BackendAuth backend):Controller {
   if(start.Session is null)return Unauthorized();await Establish(start.Session);return LocalRedirect(model.ReturnUrl);
  }
  [AllowAnonymous,HttpGet]public async Task<IActionResult> Mfa(CancellationToken ct){
-  var pending=await Pending();if(pending is null)return RedirectToAction("Login");var challenge=JsonSerializer.Deserialize<BackendChallenge>(pending.Properties!.Items["challenge"]!)!;var model=new FactorModel{Enrollment=challenge.Step=="enroll",MustChangePassword=challenge.MustChangePassword,ExpiresAt=challenge.ExpiresAt};
+  var pending=await Pending();if(pending is null){TempData["AccountStatus"]="Sign-in challenge expired. Please sign in again.";return RedirectToAction("Login");}var challenge=JsonSerializer.Deserialize<BackendChallenge>(pending.Properties!.Items["challenge"]!)!;var model=new FactorModel{Enrollment=challenge.Step=="enroll",MustChangePassword=challenge.MustChangePassword,ExpiresAt=challenge.ExpiresAt};
   if(model.Enrollment){try{var info=await backend.Enrollment(pending.Properties.Items["backend"]!,ct);if(info is not null){model.Secret=info.Secret;using var generator=new QRCodeGenerator();using var data=generator.CreateQrCode(info.OtpAuthUri,QRCodeGenerator.ECCLevel.Q);using var svg=new SvgQRCode(data);model.QrData="data:image/svg+xml;base64,"+Convert.ToBase64String(Encoding.UTF8.GetBytes(svg.GetGraphic(4)));}else ModelState.AddModelError("","Setup information was already shown or expired. Use your saved authenticator, or cancel and start again.");}catch(Exception ex)when(ex is HttpRequestException or TaskCanceledException){ModelState.AddModelError("","Identity service unavailable. Cancel and retry when it recovers.");}}
   return View(model);
  }
  [AllowAnonymous,HttpPost]public async Task<IActionResult> Verify(FactorModel model,CancellationToken ct){
-  var pending=await Pending();if(pending is null)return RedirectToAction("Login");var challenge=JsonSerializer.Deserialize<BackendChallenge>(pending.Properties!.Items["challenge"]!)!;var destination=LocalReturn(pending.Properties.Items["return"]);(BackendSession Session,string[] Codes)? complete=null;
+  var pending=await Pending();if(pending is null){TempData["AccountStatus"]="Sign-in challenge expired. Please sign in again.";return RedirectToAction("Login");}var challenge=JsonSerializer.Deserialize<BackendChallenge>(pending.Properties!.Items["challenge"]!)!;var destination=LocalReturn(pending.Properties.Items["return"]);(BackendSession Session,string[] Codes)? complete=null;
   if(ModelState.IsValid&&(!string.IsNullOrEmpty(model.Code)||!string.IsNullOrEmpty(model.RecoveryCode)))try{complete=await backend.Complete(pending.Properties.Items["backend"]!,model.Code,model.RecoveryCode,model.NewPassword,ct);}catch(Exception ex)when(ex is HttpRequestException or TaskCanceledException){}
-  if(complete is {} success){await Establish(success.Session);await HttpContext.SignOutAsync("Pending");return success.Codes.Length>0?View("RecoveryCodes",new CodesModel(success.Codes,destination)):LocalRedirect(destination);}
+  if(complete is {} success){await Establish(success.Session);await HttpContext.SignOutAsync("Pending");return success.Codes.Length>0?View("RecoveryCodes",new CodesModel(success.Codes,destination,true)):LocalRedirect(destination);}
   foreach(var field in new[]{nameof(model.Code),nameof(model.RecoveryCode),nameof(model.NewPassword),nameof(model.ConfirmPassword)})ModelState.Remove(field);
   model.Code=model.RecoveryCode=model.NewPassword=model.ConfirmPassword=null;model.Secret=model.QrData=null;model.Enrollment=challenge.Step=="enroll";model.MustChangePassword=challenge.MustChangePassword;model.ExpiresAt=challenge.ExpiresAt;
   ModelState.AddModelError("","Unable to verify. Check your authenticator/recovery code and password policy, or cancel an expired challenge and sign in again.");Response.StatusCode=401;return View("Mfa",model);
@@ -63,7 +63,7 @@ public sealed class AccountController(BackendAuth backend):Controller {
  [Authorize,HttpGet]public IActionResult Password()=>View(new PasswordModel());
  [Authorize,HttpPost]public async Task<IActionResult> Password(PasswordModel model,CancellationToken ct){
   var session=await Current();int status=400;if(ModelState.IsValid&&session is not null)try{status=await backend.ChangePassword(session.Cookie,model.CurrentPassword,model.NewPassword,ct);}catch(Exception ex)when(ex is HttpRequestException or TaskCanceledException){status=503;}
-  if(status==204){await HttpContext.SignOutAsync("Admin");return RedirectToAction("Login");}
+  if(status==204){await HttpContext.SignOutAsync("Admin");TempData["AccountStatus"]="Password changed. All sessions were revoked. Sign in with your new password and MFA.";return RedirectToAction("Login");}
   ModelState.Clear();ModelState.AddModelError("","Password change failed. Verify the current password, use 14–128 characters, and sign in with MFA again if verification is older than five minutes.");Response.StatusCode=status;return View(new PasswordModel());
  }
  [Authorize,HttpPost]public async Task<IActionResult> Regenerate([StringLength(128)]string currentPassword,[RegularExpression("^[0-9]{6}$")]string code,CancellationToken ct){var session=await Current();string[]? codes=null;if(ModelState.IsValid&&session is not null)try{codes=await backend.Regenerate(session.Cookie,currentPassword,code,ct);}catch(Exception ex)when(ex is HttpRequestException or TaskCanceledException){}if(codes is null){ModelState.Clear();ModelState.AddModelError("","Recovery regeneration requires your current password and a fresh, unused authenticator code.");Response.StatusCode=401;return View("Password",new PasswordModel());}await HttpContext.SignOutAsync("Admin");return View("RecoveryCodes",new CodesModel(codes,"/Account/Login"));}
