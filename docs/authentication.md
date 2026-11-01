@@ -1,3 +1,5 @@
+> Milestone 8 changes authentication and restore policy. Read [MFA, recovery and identity reconciliation](mfa-recovery.md) first; earlier milestone details below remain historical where superseded.
+
 # Admin authentication integration
 
 Admin is a server-rendered backend-for-frontend using the authentication-enabled POS API as the only identity authority. POS stores users, roles, lockout state and revocable 30-minute sessions in its existing PostgreSQL database. Admin has no identity database and no long-lived service-account secret.
@@ -26,7 +28,7 @@ Traces are disabled because traces can contain cookies/password bodies. Temporar
 
 ## Limits
 
-This remains a local demo and is not approved for public deployment. Staging now has gated operator account creation/password/role/disable/revocation commands and encrypted persistent keys. MFA, verified self-service recovery, immutable security audit collection, distributed throttling and assigned production operator/monitoring ownership remain blockers. POS owns all authorization; new backend endpoints deny by default until explicitly classified. The Administrator role is not checkout permission. Milestone5 adds explicitly authorized product/inventory writes; see management.md. Real payment processing/refunds remain out of scope.
+This remains a local demo and is not approved for public deployment. Staging now has gated operator account creation/password/role/disable/revocation commands and encrypted persistent keys. MFA and verified operator recovery are implemented in M8. Immutable off-host security audit collection, distributed throttling and assigned production operator/monitoring ownership remain blockers. POS owns all authorization; new backend endpoints deny by default until explicitly classified. The Administrator role is not checkout permission. Milestone5 adds explicitly authorized product/inventory writes; see management.md. Real payment processing/refunds remain out of scope.
 
 ## Executed evidence
 

@@ -13,7 +13,12 @@ login_html=read(ADMIN+'/Account/Login')
 csrf=re.search(r'name="__RequestVerificationToken"[^>]*value="([^"]+)"',login_html).group(1)
 from urllib.parse import urlencode
 req=urllib.request.Request(ADMIN+'/Account/Login',data=urlencode({'Username':os.environ['TEST_ADMIN_USERNAME'],'Password':os.environ['TEST_ADMIN_PASSWORD'],'ReturnUrl':'/','__RequestVerificationToken':csrf}).encode())
-with pos_auth.opener.open(req,timeout=20) as response: assert response.status==200
+with pos_auth.opener.open(req,timeout=20) as response:
+ assert response.status==200;factor_html=response.read().decode()
+csrf=re.search(r'name="__RequestVerificationToken"[^>]*value="([^"]+)"',factor_html).group(1)
+from mfa_fixture import take
+req=urllib.request.Request(ADMIN+'/Account/Verify',data=urlencode({'RecoveryCode':take(os.environ['TEST_ADMIN_RECOVERY_FILE']),'__RequestVerificationToken':csrf}).encode())
+with pos_auth.opener.open(req,timeout=20) as response:assert response.status==200
 products=data('/api/products'); assert len(products)==30
 for product in products:
  assert data('/api/inventory/'+product['id'])['stock']==product['stock']

@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           repository: danishirfan21/MerchantOS-POS
-          ref: 1238815f38e848716491dce0d9a3c6ae72e536bd
+          ref: 63c4abaf86d7ff7a30eb92e5cb6a99709618478a
           path: reference-pos
       - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68
         with:
@@ -30,6 +30,8 @@ jobs:
         run: bash reference-pos/deploy/install-trivy.sh
       - name: Collect unsuppressed package and runtime image findings
         run: python3 reference-pos/deploy/security-review.py --project src/MerchantOS.Admin/MerchantOS.Admin.csproj --image merchantos-review-admin
+      - name: Enforce isolated staging vulnerability policy
+        run: python3 reference-pos/deploy/security-gate.py --evidence security-evidence
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         if: always()
         with:
