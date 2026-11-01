@@ -1,6 +1,6 @@
 # MerchantOS Admin
 
-ASP.NET Core MVC/Razor 10 retail administration, with Bootstrap 5, jQuery, escaped precompiled Handlebars and authenticated server-side POS API integration. The existing POS PostgreSQL database remains the only data authority. No Admin database or service-account password exists.
+ASP.NET Core MVC/Razor 10 retail administration, with Bootstrap 5, jQuery, escaped precompiled Handlebars and authenticated server-side POS API integration. The existing POS PostgreSQL database remains the only data authority. No separate Admin identity database or service-account password exists. Durable staging tickets use the existing POS database.
 
 ## Current capabilities
 
@@ -42,7 +42,7 @@ Baseline security PR #5 and responsive PRs#1–4 are merged. Current Milestone 5
 
 ## Limits
 
-Local/isolated demo only; no public deployment approval. Single-instance Admin ticket cache, managed encrypted keys, MFA/recovery, production provisioning, distributed throttling/session storage and monitoring remain documented future work. No creation/deletion, SKU reassignment, refunds, suppliers, user management or new payment integration. New forms require JavaScript; existing read-only GET pages continue working without it. Audit before/after fields is compact and bounded, not an enterprise audit dashboard. No production readiness claim is made from CI.
+Local/isolated demo only; no public deployment approval. Staging uses durable encrypted tickets and protected persistent keys, with gated operator provisioning/revocation. MFA/self-service recovery, multi-instance/distributed throttling, off-host backup/key custody and operational monitoring remain public-deployment blockers. No creation/deletion, SKU reassignment, refunds, suppliers, user management or new payment integration. New forms require JavaScript; existing read-only GET pages continue working without it. Audit before/after fields is compact and bounded, not an enterprise audit dashboard. No production readiness claim is made from CI.
 
 ## Historical reporting (Milestone 6)
 
@@ -53,4 +53,4 @@ Orders queries the server for every page/filter and browses complete history. Se
 
 ## Milestone 7 — operational staging
 
-Implementation in new unmerged feature PRs. See [staging operations and incident runbook](docs/staging-operations.md) and [evidence/readiness matrix](docs/staging-readiness.md). Persistent protected keys, durable Admin tickets, strict local HTTPS Compose, safe migrations, encrypted backup/restore, health/readiness and correlation-safe logging are implemented. Final container/recovery and dependency findings are tracked in the matrix. No public deployment or automatic merge.
+Implementation in new unmerged feature PRs. See [staging operations and incident runbook](docs/staging-operations.md) and [evidence/readiness matrix](docs/staging-readiness.md). Persistent protected keys, durable Admin tickets, strict local HTTPS Compose, safe migrations, encrypted backup/restore, health/readiness and correlation-safe logging are implemented. The real HTTPS Compose recovery drill passed 176 assertions; complete existing regression suites and credential audits pass. Remaining image findings and production blockers are recorded in the matrix. No public deployment or automatic merge.

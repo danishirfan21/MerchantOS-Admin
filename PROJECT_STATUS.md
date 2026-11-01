@@ -1,6 +1,10 @@
-# Milestone 6 — reporting implementation under review
+# Milestone 7 — isolated staging verified; PR unmerged
 
-Branch feature/sales-reporting-dashboard; [PR #7](https://github.com/danishirfan21/MerchantOS-Admin/pull/7), unmerged. Based on verified management main61489430eff4a3843579ee08dba121128b36e8c0. Depends on POS PR #5; exact backend revision is pinned in .github/workflows/verify.yml and docs/reporting.md.
+Admin [PR #8](https://github.com/danishirfan21/MerchantOS-Admin/pull/8), branch `feature/durable-sessions-reliability`. See [verified commits, CI and readiness matrix](docs/staging-readiness.md) and [setup/recovery runbook](docs/staging-operations.md). Staging GO is restricted to isolated single-instance demo data; public deployment remains blocked.
+
+## Milestone 6 — reporting merged (historical baseline)
+
+[PR #7](https://github.com/danishirfan21/MerchantOS-Admin/pull/7) merged as `151e7d9a5f5aef47c1c22dc841cc0b26d0a5c741`. Based on verified management main61489430eff4a3843579ee08dba121128b36e8c0. Depends on POS PR #5; exact backend revision is pinned in .github/workflows/verify.yml and docs/reporting.md.
 
 Historical server-side Orders, store-local Overview periods, authoritative financial KPIs, accessible revenue trends, cash/simulated-card breakdown, snapshot top products and bounded CSV implemented. Current inventory/catalog remain explicitly labeled. Existing management/audit/checkout/authentication and receipt printing are preserved. No public deployment.
 
@@ -30,9 +34,9 @@ Historical visual rationale remains in docs/*-visual-review.md. All15approved sc
 
 ## Limits
 
-Local/isolated demo only; no public deployment. No second database, creation/deletion, refunds or expanded permissions system. Single-instance ticket cache, production keys/provisioning, MFA/recovery and distributed infrastructure remain future work. Historical reporting now replaces the earlier latest-100-order limit; stock threshold 5 is a presentation rule. See README and authentication/management docs.
+Local/isolated demo only; no public deployment. No second database, creation/deletion, refunds or expanded permissions system. Milestone 7 replaces the staging memory cache with encrypted durable tickets, persistent protected keys and operator commands. MFA/recovery, distributed support and public operational ownership remain blockers. Historical reporting now replaces the earlier latest-100-order limit; stock threshold 5 is a presentation rule. See README and authentication/management docs.
 
 
 ## Milestone 7 — operational staging
 
-Implementation in new unmerged feature PRs. See [staging operations and incident runbook](docs/staging-operations.md) and [evidence/readiness matrix](docs/staging-readiness.md). Persistent protected keys, durable Admin tickets, strict local HTTPS Compose, safe migrations, encrypted backup/restore, health/readiness and correlation-safe logging are implemented. Final container/recovery and dependency findings are tracked in the matrix. No public deployment or automatic merge.
+Implementation in new unmerged feature PRs. See [staging operations and incident runbook](docs/staging-operations.md) and [evidence/readiness matrix](docs/staging-readiness.md). Persistent protected keys, durable Admin tickets, strict local HTTPS Compose, safe migrations, encrypted backup/restore, health/readiness and correlation-safe logging are implemented. The real HTTPS Compose recovery drill passed 176 assertions; complete existing regression suites and credential audits pass. Remaining image findings and production blockers are recorded in the matrix. No public deployment or automatic merge.
