@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           repository: danishirfan21/MerchantOS-POS
-          ref: a99238d330a63f17a4b79eadaa461f75a9520b35
+          ref: 63c4abaf86d7ff7a30eb92e5cb6a99709618478a
           path: reference-pos
       - name: Install checksum-verified Trivy 0.76.1
         run: bash reference-pos/deploy/install-trivy.sh
