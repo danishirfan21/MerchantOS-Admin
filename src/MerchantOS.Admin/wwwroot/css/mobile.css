@@ -6,7 +6,7 @@ body {
   --surface:#f8fafc;
   --low:#f1f5f9;
   --line:#e2e8f0;
-  --secondary:#64748b;
+  --secondary:#475569;
   background:var(--surface);
 }
 .topbar { padding:0 16px; border-bottom:1px solid var(--line); background:#f8fafcf2; }
@@ -26,7 +26,7 @@ body {
 .count-chip { font-size:10px; padding:1px 6px; border-radius:999px; }
 .scope-chip { height:auto; padding:6px 8px; font-size:10px; max-width:100px; white-space:normal; text-align:center; line-height:15px; }
 .mobile-bottom-nav { position:fixed; inset:auto 0 0; display:flex; justify-content:space-around; background:#f8fafcf5; border-top:1px solid var(--line); box-shadow:0 -1px 6px #00000008; z-index:1035; padding:4px 8px calc(4px + env(safe-area-inset-bottom)); min-height:68px; }
-.mobile-bottom-nav a { display:flex; flex:1; flex-direction:column; align-items:center; justify-content:center; gap:4px; min-height:56px; font-size:11px; line-height:14px; color:#64748b; border-radius:8px; }
+.mobile-bottom-nav a { display:flex; flex:1; flex-direction:column; align-items:center; justify-content:center; gap:4px; min-height:56px; font-size:11px; line-height:14px; color:#475569; border-radius:8px; }
 .mobile-bottom-nav .icon { font-family:'MerchantOS Mobile Symbols'; font-size:24px; }
 .mobile-bottom-nav a[aria-current=page] { color:var(--primary); font-weight:700; background:#0478570a; }
 .mobile-bottom-nav a:hover { text-decoration:none; background:var(--low); }
