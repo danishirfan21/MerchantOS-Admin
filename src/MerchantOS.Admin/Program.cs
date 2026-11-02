@@ -62,5 +62,6 @@ app.MapGet("/health/ready",async(AdminTicketStore tickets,IHttpClientFactory fac
 }).AllowAnonymous();
 app.MapGet("/ops/metrics",(OperationalMetrics metrics)=>Results.Ok(metrics.Snapshot())).RequireAuthorization("OperationsRead");
 app.MapControllerRoute("default", "{controller=Admin}/{action=Index}/{id?}");
+app.MapMonitor("/ops/monitor");
 app.Run();
 public partial class Program { }
