@@ -4,7 +4,7 @@
 
 Admin uses its authenticated typed PosClient to GET /api/admin/reports/orders, /sales and /orders.csv. The current user's backend cookie stays server-side through PosSessionHandler; no new credentials, browser tokens, database or identity model. POS enforces an explicit HistoricalReporting Administrator policy, independent of MVC. Cashiers retain only existing catalog/checkout/owned-receipt access. Endpoints are read-only, no-store and return401/403 appropriately.
 
-CI pins POS `f1b325578383b2c5c3e06c60e17093113223c311` in .github/workflows/verify.yml. Review POS PR #5 first and retain its tested commit when merging. Final dependency heads and CI are recorded in Admin PR #7; both current PRs stay unmerged. Prior Milestone 5 PRs#4(POS)/#6(Admin) are merged.
+Historical Milestone 6 CI pinned POS `f1b325578383b2c5c3e06c60e17093113223c311`; POS PR #5 and Admin PR #7 were subsequently merged, followed by milestones through M9. Current dependency pins are in .github/workflows/verify.yml. M10 uses new POS PR #9 and Admin PR #11, which remain unmerged.
 
 ## Store time and filters
 

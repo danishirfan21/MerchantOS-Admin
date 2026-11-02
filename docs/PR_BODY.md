@@ -1,3 +1,5 @@
+> Historical desktop PR description. Milestones 1–9 are now merged; references below to then-unmerged foundation work describe that earlier review, not current status. Current M10 evidence is in docs/retail/ and PR #11.
+
 ## Implement the five approved Stitch desktop screens
 
 Translates the supplied Overview, Products, Inventory, Orders and Order Details screens into a shared Razor/Bootstrap desktop UI at 1440 × 900. Preserves the verified POS REST integration and read-only boundaries.
