@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           repository: danishirfan21/MerchantOS-POS
-          ref: 6e4a483bace285ed2d9a641c03112013ca736951
+          ref: 0be94952a6189e37fccd8f080418b7681dd29606
           path: reference-pos
       - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68
         with:
@@ -34,14 +34,14 @@ jobs:
       - name: Install checksum-verified Trivy 0.76.1
         run: bash reference-pos/deploy/install-trivy.sh
       - name: Verify documented isolated demo launcher and native account setup
-        run: python3 reference-pos/deploy/verify_demo.py --admin "$PWD" --output demo-launcher-results.json > demo-launcher.log 2>&1
+        run: python3 reference-pos/deploy/verify_demo.py --admin "$PWD" --output demo-launcher-results.json
       - name: Build and exercise fresh disposable HTTPS topology
         run: python3 reference-pos/deploy/verify_staging.py --directory "$RUNNER_TEMP/merchantos-staging" --admin-context .
       - name: Audit bounded operational evidence
         id: audit
         if: always()
         run: |
-          python3 reference-pos/scripts/audit_artifacts.py demo-launcher-results.json demo-launcher.log operational-evidence operations-results.json
+          python3 reference-pos/scripts/audit_artifacts.py demo-launcher-results.json operational-evidence operations-results.json
           if test -f operations-results.json; then python3 -c "import json,pathlib;p=pathlib.Path('operations-results.json');r=json.loads(p.read_text());r['credentialAudit']='passed';p.write_text(json.dumps(r,indent=2))"; fi
       - name: Evidence-based readiness decision
         if: success()
@@ -54,4 +54,3 @@ jobs:
             operational-evidence/
             operations-results.json
             demo-launcher-results.json
-            demo-launcher.log

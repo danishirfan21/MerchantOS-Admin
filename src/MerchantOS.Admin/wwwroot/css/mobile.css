@@ -1,7 +1,7 @@
 @font-face { font-family:'MerchantOS Mobile Symbols'; font-style:normal; font-weight:400; font-display:block; src:url('/fonts/mobile-symbols.ttf') format('truetype'); }
 /* Approved Stitch mobile presentation. Loaded only for screen widths below 768px. */
 body {
-  --primary:#059669;
+  --primary:#047857;
   --primary-container:#047857;
   --surface:#f8fafc;
   --low:#f1f5f9;
@@ -16,7 +16,7 @@ body {
 .tablet-brand-mark { display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; color:var(--primary); }
 .header-brand { display:flex; flex-direction:column; font-size:17px; line-height:22px; font-weight:700; letter-spacing:-.3px; }
 .mobile-store { display:block; font-size:10px; line-height:14px; font-weight:400; color:var(--secondary); letter-spacing:0; }
-.avatar-small { width:32px; height:32px; background:#05966918; color:var(--primary); border:1px solid #05966933; }
+.avatar-small { width:32px; height:32px; background:#04785718; color:var(--primary); border:1px solid #04785733; }
 .main { padding:80px 16px calc(100px + env(safe-area-inset-bottom)); max-width:440px; }
 .page-heading { margin-bottom:16px; gap:8px; }
 .page-heading>div { min-width:0; flex:1; }
@@ -28,7 +28,7 @@ body {
 .mobile-bottom-nav { position:fixed; inset:auto 0 0; display:flex; justify-content:space-around; background:#f8fafcf5; border-top:1px solid var(--line); box-shadow:0 -1px 6px #00000008; z-index:1035; padding:4px 8px calc(4px + env(safe-area-inset-bottom)); min-height:68px; }
 .mobile-bottom-nav a { display:flex; flex:1; flex-direction:column; align-items:center; justify-content:center; gap:4px; min-height:56px; font-size:11px; line-height:14px; color:#64748b; border-radius:8px; }
 .mobile-bottom-nav .icon { font-family:'MerchantOS Mobile Symbols'; font-size:24px; }
-.mobile-bottom-nav a[aria-current=page] { color:var(--primary); font-weight:700; background:#0596690a; }
+.mobile-bottom-nav a[aria-current=page] { color:var(--primary); font-weight:700; background:#0478570a; }
 .mobile-bottom-nav a:hover { text-decoration:none; background:var(--low); }
 .sidebar { max-width:85vw; }
 .sidebar-profile { margin-top:auto; }
