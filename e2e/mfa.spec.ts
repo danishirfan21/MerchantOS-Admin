@@ -23,7 +23,10 @@ async function secretInput(page:Page,id:string,value:string){await page.locator(
 async function primary(page:Page,user:ReturnType<typeof identity>){await page.goto('/Account/Login');await page.locator('#Username').fill(user.name);await secretInput(page,'#Password',user.password);await page.getByRole('button',{name:'Sign In',exact:true}).click();await expect(page).toHaveURL(/Account\/Mfa/);}
 async function redeem(page:Page,code:string){await secretInput(page,'#RecoveryCode',code);await page.getByRole('button',{name:'Verify',exact:true}).click();}
 test('MFA pending identity has no authority; invalid code, CSRF and cancel are safe',async({page})=>{
- const user=identity();await primary(page,user);expect((await page.request.get('/Admin/ProductRows',{maxRedirects:0})).status()).toBe(401);
+ const user=identity();await primary(page,user);
+ await page.route('**/__retail_axe.js',route=>route.fulfill({path:resolve('node_modules/axe-core/axe.min.js'),contentType:'application/javascript'}));await page.addScriptTag({url:'/__retail_axe.js'});
+ const assessment=await page.evaluate(async()=>await(window as any).axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa','wcag22aa']}}));writeFileSync(test.info().outputPath('mfa-accessibility.json'),JSON.stringify({violations:assessment.violations,incomplete:assessment.incomplete.map((v:any)=>({id:v.id,impact:v.impact})),passes:assessment.passes.length},null,2));await page.screenshot({path:test.info().outputPath('mfa-verification.png')});expect(assessment.violations.filter((v:any)=>['serious','critical'].includes(v.impact))).toEqual([]);
+ expect((await page.request.get('/Admin/ProductRows',{maxRedirects:0})).status()).toBe(401);
  const cookies=await page.context().cookies();expect(cookies.some(c=>c.name==='MerchantOS.Admin.Session')).toBeFalsy();expect(cookies.some(c=>c.name==='MerchantOS.Pos.Session')).toBeFalsy();
  expect((await page.request.post('/Account/Verify',{form:{Code:'000000'}})).status()).toBe(400);
  await secretInput(page,'#Code','abcdef');await page.locator('form').evaluate((f:HTMLFormElement)=>f.noValidate=true);await page.getByRole('button',{name:'Verify',exact:true}).click();await expect(page.getByRole('alert')).toContainText('Unable to verify');
